@@ -144,7 +144,7 @@ const run = async (): Promise<void> => {
     const comments = await octokit.issues.listCommentsForRepo({ owner, repo });
     const existingComment = comments.data.find(comment => {
       debug('commentHeader', commentHeader);
-      debug('comment', comment);
+      debug('comment', comment.body);
 
       return comment.body.startsWith(commentHeader);
     });

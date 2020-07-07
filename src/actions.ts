@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { inspect } from 'util';
 import createDebug from 'debug';
 import { debug as githubDebug } from '@actions/core';
 
@@ -10,7 +11,9 @@ const isGitHubActions = (): boolean => !!process.env.GITHUB_WORKSPACE;
 
 const debug = (...args: any[]): void => {
   if (isGitHubActions()) {
-    githubDebug(args.join('\n'));
+    for (const arg of args) {
+      githubDebug(inspect(arg));
+    }
   } else {
     localDebug(args);
   }
