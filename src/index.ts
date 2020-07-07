@@ -9,7 +9,7 @@ import { isGitHubActions, debug } from './actions';
 
 let commentHeader: string;
 
-const getArguments = (): string => {
+const getArguments = (): string[] => {
   const inputs = {
     config: getInput('config'),
     graph: getInput('graph'),
@@ -46,7 +46,7 @@ const getArguments = (): string => {
 
   debug('Apollo CLI argument string', args.join(' '));
 
-  return args.join(' ');
+  return args;
 };
 
 const getMessage = async (): Promise<string> => {
