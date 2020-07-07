@@ -1,0 +1,67 @@
+{
+  "name": "apollo-schema-check-action",
+  "description": "A GitHub Action to run a schema check and post the results as a comment on a Pull Request",
+  "version": "1.0.0",
+  "author": "Ian Sutherland <ian@iansutherland.ca>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iansu/apollo-schema-check-action"
+  },
+  "main": "build/index.js",
+  "private": true,
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "start": "ts-node-dev --no-notify -- src/index.ts",
+    "build": "NODE_ENV=production ncc build src/index.ts -o build --minify",
+    "test": "jest",
+    "clean": "rimraf build",
+    "clean:modules": "rimraf node_modules",
+    "lint": "eslint \"**/*.{ts,js}\"",
+    "format": "prettier --write **/*.ts",
+    "format:check": "prettier --check **/*.ts"
+  },
+  "keywords": [
+    "actions",
+    "github",
+    "apollo",
+    "server",
+    "schema",
+    "check",
+    "javascript",
+    "typescript"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint"
+    ],
+    "*.{ts,js,json,yaml,yml,md}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0",
+    "@octokit/action": "^3.0.0",
+    "@types/debug": "^4.1.5",
+    "@types/node": "^14.0.13",
+    "@zeit/ncc": "^0.22.3",
+    "debug": "^4.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-neo": "^0.5.2",
+    "execa": "^4.0.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
+    "ts-node-dev": "1.0.0-pre.44",
+    "typescript": "^3.9.5"
+  }
+}
