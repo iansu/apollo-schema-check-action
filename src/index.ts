@@ -25,7 +25,7 @@ const getArguments = (): string[] => {
   };
   const args = [];
 
-  debug(process.env);
+  debug('token', !!process.env.GITHUB_TOKEN);
 
   if (inputs.graph && !inputs.key) {
     throw new Error('You must provide an Apollo key');
@@ -50,21 +50,29 @@ const getArguments = (): string[] => {
 
 const formatMessage = (output: string): string | undefined => {
   const startOfMessage = output.indexOf('###');
+  const title = getInput('title');
+  const alwaysComment = getInput('alwaysComment');
 
   if (startOfMessage === -1) {
     throw new Error('Error running Apollo CLI');
   }
 
-  // if (output.includes('0 schema changes') || output.includes('null operations')) {
-  if (output.includes('null operations')) {
+  if (
+    alwaysComment !== 'true' &&
+    (/\s0 schema changes/.test(output) || output.includes('null operations'))
+  ) {
     debug('output', output);
 
     return;
   }
 
-  const message = output
-    .slice(startOfMessage)
-    .replace('Apollo Service Check', 'Apollo Schema Check');
+  const message = output.slice(startOfMessage);
+
+  if (title) {
+    message.replace('Apollo Service Check\n', `Apollo Schema Check\n####${title}\n`);
+  } else {
+    message.replace('Apollo Service Check', `Apollo Schema Check`);
+  }
 
   debug('message', message);
 
@@ -146,12 +154,7 @@ const run = async (): Promise<void> => {
       repo,
       issue_number: pullRequestNumber
     });
-    const existingComment = comments.data.find(comment => {
-      debug('commentHeader', commentHeader);
-      debug('comment', comment.body);
-
-      return comment.body.startsWith(commentHeader);
-    });
+    const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
 
     if (message) {
       if (existingComment) {

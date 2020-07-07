@@ -35,6 +35,13 @@ inputs:
     required: false
   validationPeriod:
     description: 'The size of the time window with which to validate the schema against. You may provide a number (in seconds), or an ISO8601 format duration for more granularity (see: https://en.wikipedia.org/wiki/ISO_8601#Durations)'
+  title:
+    description: The name of the graph which will be shown in the comment
+    required: false
+  alwaysComment:
+    description: Leave a comment on the PR even if there are no schema changes in the PR
+    default: false
+    required: false
 
 runs:
   using: node12
