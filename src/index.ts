@@ -39,7 +39,7 @@ const getArguments = (): string[] => {
   }
 
   for (const [key, value] of Object.entries(inputs)) {
-    if (value) {
+    if (key !== 'token' && value) {
       args.push(`--${key}=${value}`);
     }
   }
