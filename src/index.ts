@@ -66,12 +66,12 @@ const formatMessage = (output: string): string | undefined => {
     return;
   }
 
-  const message = output.slice(startOfMessage);
+  let message = output.slice(startOfMessage);
 
   if (title) {
-    message.replace('Apollo Service Check\n', `Apollo Schema Check\n####${title}\n`);
+    message = message.replace('Apollo Service Check\n', `Apollo Schema Check\n####${title}\n`);
   } else {
-    message.replace('Apollo Service Check', `Apollo Schema Check`);
+    message = message.replace('Apollo Service Check', `Apollo Schema Check`);
   }
 
   debug('message', message);
