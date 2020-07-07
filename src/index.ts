@@ -51,17 +51,22 @@ const getArguments = (): string[] => {
 const formatMessage = (output: string): string | undefined => {
   const startOfMessage = output.indexOf('###');
 
-  debug('output', output);
-
   if (startOfMessage === -1) {
     throw new Error('Error running Apollo CLI');
   }
 
-  if (output.includes('0 schema changes') || output.includes('null operations')) {
+  // if (output.includes('0 schema changes') || output.includes('null operations')) {
+  if (output.includes('null operations')) {
+    debug('output', output);
+
     return;
   }
 
-  return output.slice(startOfMessage);
+  const message = output.slice(startOfMessage);
+
+  debug('message', message);
+
+  return message;
 };
 
 const getMessage = async (): Promise<string | undefined> => {
