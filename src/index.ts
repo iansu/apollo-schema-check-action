@@ -48,25 +48,23 @@ const getArguments = (): string[] => {
   return args;
 };
 
-const formatMessage = (output: string): string => {
+const formatMessage = (output: string): string | undefined => {
   const startOfMessage = output.indexOf('###');
+
+  debug('output', output);
 
   if (startOfMessage === -1) {
     throw new Error('Error running Apollo CLI');
   }
 
   if (output.includes('0 schema changes') || output.includes('null operations')) {
-    return '';
+    return;
   }
 
-  const message = output.slice(startOfMessage);
-
-  debug('message', message);
-
-  return message;
+  return output.slice(startOfMessage);
 };
 
-const getMessage = async (): Promise<string> => {
+const getMessage = async (): Promise<string | undefined> => {
   const config = getInput('config');
   const graph = getInput('graph');
   const variant = getInput('variant');
@@ -86,15 +84,26 @@ const getMessage = async (): Promise<string> => {
 
   try {
     const output = (await execa('npx', ['apollo@2.28.3', 'schema:check', ...args])).stdout;
+    const message = formatMessage(output);
 
-    return `${commentHeader}\n\n${formatMessage(output)}`;
+    if (message) {
+      return `${commentHeader}\n\n${message}`;
+    } else {
+      return;
+    }
   } catch (error) {
     if (error.exitCode !== 1) {
       debug('Apollo CLI error', error);
 
       throw new Error('Error running Apollo CLI');
     } else {
-      return `${commentHeader}\n\n${formatMessage(error.stdout)}`;
+      const message = formatMessage(error.stdout);
+
+      if (message) {
+        return `${commentHeader}\n\n${message}`;
+      } else {
+        return;
+      }
     }
   }
 };
