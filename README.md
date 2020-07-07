@@ -16,16 +16,23 @@ on:
     types: ['opened', 'reopened', 'synchronize']
 
 jobs:
-  title:
-    name: check schema
+  check schema:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
-      - name: Check schema
+      - name: Customer API check
         uses: iansu/apollo-schema-check-action@v1
         with:
-          config: apollo.config.js
-          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Customer API
+          graph: my-customer-api
+          variant: production
+          localSchemaFile: 'schema.graphql'
+          serviceName: my-service
+          validationPeriod: P2W
+          key: ${{ secrets.APOLLO_KEY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Settings
@@ -34,7 +41,13 @@ Almost all of the settings from the [Apollo CLI `schema:check` command](https://
 
 1. The `json` and `markdown` options have been removed because this action requires markdown to post a comment on your PR
 1. The `header` option works slightly different, you pass it a comma separated list of headers. For example: `Header1=Value,Header2=Value2`.
-1. The `token` parameter has been added and is how you pass in your GitHub token. This setting is **required** in order to post a comment on your PR.
+
+Some additional settings have also been added:
+
+| Name          | Description                                                             | Default | Required |
+| ------------- | ----------------------------------------------------------------------- | ------- | -------- |
+| title         | The name of the graph which will be shown in the comment                |         | No       |
+| alwaysComment | Leave a comment on the PR even if there are no schema changes in the PR | false   | No       |
 
 ## Credits
 

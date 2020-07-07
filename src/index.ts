@@ -36,7 +36,13 @@ const getArguments = (): string[] => {
   }
 
   for (const [key, value] of Object.entries(inputs)) {
-    if (value) {
+    if (key === 'header') {
+      const headers = value.split(',');
+
+      for (const header of headers) {
+        args.push(`--header='${header.trim()}'`);
+      }
+    } else if (value) {
       args.push(`--${key}=${value}`);
     }
   }
@@ -69,7 +75,7 @@ const formatMessage = (output: string): string | undefined => {
   let message = output.slice(startOfMessage);
 
   if (title) {
-    message = message.replace('Apollo Service Check\n', `Apollo Schema Check\n####${title}\n`);
+    message = message.replace('Apollo Service Check\n', `Apollo Schema Check\n#### ${title}\n`);
   } else {
     message = message.replace('Apollo Service Check', `Apollo Schema Check`);
   }
