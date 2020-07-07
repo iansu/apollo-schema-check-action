@@ -25,10 +25,6 @@ const getArguments = (): string[] => {
   };
   const args = [];
 
-  if (!process.env.GITHUB_TOKEN) {
-    throw new Error('You must provide a GitHub token');
-  }
-
   if (inputs.graph && !inputs.key) {
     throw new Error('You must provide an Apollo key');
   }
