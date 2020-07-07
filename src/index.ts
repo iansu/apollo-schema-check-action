@@ -21,12 +21,11 @@ const getArguments = (): string[] => {
     queryCountThreshold: getInput('queryCountThreshold'),
     queryCountThresholdPercentage: getInput('queryCountThresholdPercentage'),
     serviceName: getInput('serviceName'),
-    validationPeriod: getInput('validationPeriod'),
-    token: getInput('token')
+    validationPeriod: getInput('validationPeriod')
   };
   const args = [];
 
-  if (!inputs.token) {
+  if (!process.env.GITHUB_TOKEN) {
     throw new Error('You must provide a GitHub token');
   }
 
@@ -39,7 +38,7 @@ const getArguments = (): string[] => {
   }
 
   for (const [key, value] of Object.entries(inputs)) {
-    if (key !== 'token' && value) {
+    if (value) {
       args.push(`--${key}=${value}`);
     }
   }

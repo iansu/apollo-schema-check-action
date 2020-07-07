@@ -35,9 +35,6 @@ inputs:
     required: false
   validationPeriod:
     description: 'The size of the time window with which to validate the schema against. You may provide a number (in seconds), or an ISO8601 format duration for more granularity (see: https://en.wikipedia.org/wiki/ISO_8601#Durations)'
-  token:
-    description: GitHub authentication token. Required to post a comment with the results.
-    required: true
 
 runs:
   using: node12
