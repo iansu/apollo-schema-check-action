@@ -25,6 +25,8 @@ const getArguments = (): string[] => {
   };
   const args = [];
 
+  debug(process.env);
+
   if (inputs.graph && !inputs.key) {
     throw new Error('You must provide an Apollo key');
   }
@@ -38,6 +40,8 @@ const getArguments = (): string[] => {
       args.push(`--${key}=${value}`);
     }
   }
+
+  args.push('--markdown');
 
   debug('Apollo CLI argument string', args.join(' '));
 
@@ -65,6 +69,8 @@ const getMessage = async (): Promise<string> => {
   try {
     const output = (await execa('npx', ['apollo@2.28.3', 'schema:check', ...args])).stdout;
 
+    debug('message', `${commentHeader}\n\n${output}`);
+
     return `${commentHeader}\n\n${output}`;
   } catch (error) {
     if (error.exitCode !== 1) {
@@ -72,6 +78,8 @@ const getMessage = async (): Promise<string> => {
 
       throw new Error('Error running Apollo CLI');
     } else {
+      debug(`${commentHeader}\n\n${error.stdout}`);
+
       return `${commentHeader}\n\n${error.stdout}`;
     }
   }
