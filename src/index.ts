@@ -62,7 +62,9 @@ const formatMessage = (output: string): string | undefined => {
     return;
   }
 
-  const message = output.slice(startOfMessage);
+  const message = output
+    .slice(startOfMessage)
+    .replace('Apollo Service Check', 'Apollo Schema Check');
 
   debug('message', message);
 
@@ -140,7 +142,12 @@ const run = async (): Promise<void> => {
     const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
     const comments = await octokit.issues.listCommentsForRepo({ owner, repo });
-    const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
+    const existingComment = comments.data.find(comment => {
+      debug('commentHeader', commentHeader);
+      debug('comment', comment);
+
+      return comment.body.startsWith(commentHeader);
+    });
 
     if (message) {
       if (existingComment) {
