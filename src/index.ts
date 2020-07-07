@@ -141,7 +141,11 @@ const run = async (): Promise<void> => {
     const [owner, repo] = githubRepo.split('/');
     const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
-    const comments = await octokit.issues.listCommentsForRepo({ owner, repo });
+    const comments = await octokit.issues.listComments({
+      owner,
+      repo,
+      issue_number: pullRequestNumber
+    });
     const existingComment = comments.data.find(comment => {
       debug('commentHeader', commentHeader);
       debug('comment', comment.body);
