@@ -48,6 +48,24 @@ const getArguments = (): string[] => {
   return args;
 };
 
+const formatMessage = (output: string): string => {
+  const startOfMessage = output.indexOf('###');
+
+  if (startOfMessage === -1) {
+    throw new Error('Error running Apollo CLI');
+  }
+
+  if (output.includes('0 schema changes') || output.includes('null operations')) {
+    return '';
+  }
+
+  const message = output.slice(startOfMessage);
+
+  debug('message', message);
+
+  return message;
+};
+
 const getMessage = async (): Promise<string> => {
   const config = getInput('config');
   const graph = getInput('graph');
@@ -69,18 +87,14 @@ const getMessage = async (): Promise<string> => {
   try {
     const output = (await execa('npx', ['apollo@2.28.3', 'schema:check', ...args])).stdout;
 
-    debug('message', `${commentHeader}\n\n${output}`);
-
-    return `${commentHeader}\n\n${output}`;
+    return `${commentHeader}\n\n${formatMessage(output)}`;
   } catch (error) {
     if (error.exitCode !== 1) {
       debug('Apollo CLI error', error);
 
       throw new Error('Error running Apollo CLI');
     } else {
-      debug(`${commentHeader}\n\n${error.stdout}`);
-
-      return `${commentHeader}\n\n${error.stdout}`;
+      return `${commentHeader}\n\n${formatMessage(error.stdout)}`;
     }
   }
 };
@@ -114,18 +128,20 @@ const run = async (): Promise<void> => {
     const comments = await octokit.issues.listCommentsForRepo({ owner, repo });
     const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
 
-    if (existingComment) {
-      octokit.issues.updateComment({
-        ...context.repo,
-        comment_id: existingComment.id,
-        body: message
-      });
-    } else {
-      octokit.issues.createComment({
-        ...context.repo,
-        issue_number: pullRequestNumber,
-        body: message
-      });
+    if (message) {
+      if (existingComment) {
+        octokit.issues.updateComment({
+          ...context.repo,
+          comment_id: existingComment.id,
+          body: message
+        });
+      } else {
+        octokit.issues.createComment({
+          ...context.repo,
+          issue_number: pullRequestNumber,
+          body: message
+        });
+      }
     }
   } catch (error) {
     setFailed(error.message);
