@@ -54,22 +54,32 @@ const getArguments = (): string[] => {
   return args;
 };
 
-const formatMessage = (output: string): string | undefined => {
+const formatMessage = (output: string, existingComment: boolean): string | undefined => {
   const startOfMessage = output.indexOf('###');
   const title = getInput('title');
   const alwaysComment = getInput('alwaysComment');
+  const failOnError = getInput('failOnError');
 
   if (startOfMessage === -1) {
     throw new Error('Error running Apollo CLI');
   }
 
-  if (
-    alwaysComment !== 'true' &&
-    (/\s0 schema changes/.test(output) || output.includes('null operations'))
-  ) {
+  if (alwaysComment !== 'true' && output.includes('null operations')) {
     debug('output', output);
 
     return;
+  }
+
+  if (!existingComment && alwaysComment !== 'true' && /\s0 schema changes/.test(output)) {
+    debug('output', output);
+
+    return;
+  }
+
+  if (failOnError && /\d+ breaking change/.test(output)) {
+    setFailed('Breaking changes found');
+  } else if (failOnError && /\d+ composition error/.test(output)) {
+    setFailed('Composition errors found');
   }
 
   let message = output.slice(startOfMessage);
@@ -85,7 +95,7 @@ const formatMessage = (output: string): string | undefined => {
   return message;
 };
 
-const getMessage = async (): Promise<string | undefined> => {
+const getMessage = async (existingComment: boolean): Promise<string | undefined> => {
   const config = getInput('config');
   const graph = getInput('graph');
   const variant = getInput('variant');
@@ -105,7 +115,7 @@ const getMessage = async (): Promise<string | undefined> => {
 
   try {
     const output = (await execa('npx', ['apollo@2.28.3', 'schema:check', ...args])).stdout;
-    const message = formatMessage(output);
+    const message = formatMessage(output, existingComment);
 
     if (message) {
       return `${commentHeader}\n\n${message}`;
@@ -118,7 +128,7 @@ const getMessage = async (): Promise<string | undefined> => {
 
       throw new Error('Error running Apollo CLI');
     } else {
-      const message = formatMessage(error.stdout);
+      const message = formatMessage(error.stdout, existingComment);
 
       if (message) {
         return `${commentHeader}\n\n${message}`;
@@ -131,7 +141,7 @@ const getMessage = async (): Promise<string | undefined> => {
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await getMessage());
+    console.log(await getMessage(false));
 
     return;
   }
@@ -151,7 +161,6 @@ const run = async (): Promise<void> => {
       return;
     }
 
-    const message = await getMessage();
     const [owner, repo] = githubRepo.split('/');
     const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
@@ -161,6 +170,7 @@ const run = async (): Promise<void> => {
       issue_number: pullRequestNumber
     });
     const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
+    const message = await getMessage(!!existingComment);
 
     if (message) {
       if (existingComment) {

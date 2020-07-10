@@ -42,6 +42,10 @@ inputs:
     description: Leave a comment on the PR even if there are no schema changes in the PR
     default: false
     required: false
+  failOnError:
+    description: Fail the check if breaking changes or composition errors are found
+    default: true
+    required: false
 
 runs:
   using: node12
