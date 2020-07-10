@@ -65,20 +65,24 @@ const formatMessage = (output: string, existingComment: boolean): string | undef
   }
 
   if (alwaysComment !== 'true' && output.includes('null operations')) {
+    debug('alwaysComment is false and number of operations is null');
     debug('output', output);
 
     return;
   }
 
   if (!existingComment && alwaysComment !== 'true' && /\s0 schema changes/.test(output)) {
+    debug('existingComment is false, alwaysComment is false and there are zero schema changes');
     debug('output', output);
 
     return;
   }
 
   if (failOnError && /\d+ breaking change/.test(output)) {
+    debug('Breaking changes found');
     setFailed('Breaking changes found');
   } else if (failOnError && /\d+ composition error/.test(output)) {
+    debug('Composition errors found');
     setFailed('Composition errors found');
   }
 
@@ -100,6 +104,10 @@ const getMessage = async (existingComment: boolean): Promise<string | undefined>
   const graph = getInput('graph');
   const variant = getInput('variant');
   const args = getArguments();
+
+  if (existingComment) {
+    debug('existing comment found');
+  }
 
   if (config) {
     commentHeader = `<!-- apolloSchemaCheckAction config: ${config} -->`;
