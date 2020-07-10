@@ -7,7 +7,26 @@ import execa from 'execa';
 
 import { isGitHubActions, debug } from './actions';
 
-let commentHeader: string;
+const getCommentHeader = (): string => {
+  const config = getInput('config');
+  const graph = getInput('graph');
+  const variant = getInput('variant');
+  const title = getInput('title');
+
+  if (title) {
+    return `<!-- apolloSchemaCheckAction name: ${title} -->`;
+  } else if (config) {
+    return `<!-- apolloSchemaCheckAction config: ${config} -->`;
+  } else if (graph && variant) {
+    return `<!-- apolloSchemaCheckAction graph: ${graph}@${variant} -->`;
+  } else if (graph) {
+    return `<!-- apolloSchemaCheckAction graph: ${graph} -->`;
+  } else if (variant) {
+    return `<!-- apolloSchemaCheckAction variant: ${variant} -->`;
+  } else {
+    return `<!-- apolloSchemaCheckAction -->`;
+  }
+};
 
 const getArguments = (): string[] => {
   const inputs = {
@@ -99,26 +118,14 @@ const formatMessage = (output: string, existingComment: boolean): string | undef
   return message;
 };
 
-const getMessage = async (existingComment: boolean): Promise<string | undefined> => {
-  const config = getInput('config');
-  const graph = getInput('graph');
-  const variant = getInput('variant');
+const getMessage = async (
+  commentHeader: string,
+  existingComment: boolean
+): Promise<string | undefined> => {
   const args = getArguments();
 
   if (existingComment) {
     debug('existing comment found');
-  }
-
-  if (config) {
-    commentHeader = `<!-- apolloSchemaCheckAction config: ${config} -->`;
-  } else if (graph && variant) {
-    commentHeader = `<!-- apolloSchemaCheckAction graph: ${graph}@${variant} -->`;
-  } else if (graph) {
-    commentHeader = `<!-- apolloSchemaCheckAction graph: ${graph} -->`;
-  } else if (variant) {
-    commentHeader = `<!-- apolloSchemaCheckAction variant: ${variant} -->`;
-  } else {
-    commentHeader = `<!-- apolloSchemaCheckAction -->`;
   }
 
   try {
@@ -149,7 +156,7 @@ const getMessage = async (existingComment: boolean): Promise<string | undefined>
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await getMessage(false));
+    console.log(await getMessage(getCommentHeader(), false));
 
     return;
   }
@@ -169,6 +176,7 @@ const run = async (): Promise<void> => {
       return;
     }
 
+    const commentHeader = getCommentHeader();
     const [owner, repo] = githubRepo.split('/');
     const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
@@ -178,7 +186,7 @@ const run = async (): Promise<void> => {
       issue_number: pullRequestNumber
     });
     const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
-    const message = await getMessage(!!existingComment);
+    const message = await getMessage(commentHeader, !!existingComment);
 
     if (message) {
       if (existingComment) {
