@@ -49,6 +49,7 @@ Some additional settings have also been added:
 | ------------- | ----------------------------------------------------------------------- | ------- | -------- |
 | title         | The name of the graph which will be shown in the comment                |         | No       |
 | alwaysComment | Leave a comment on the PR even if there are no schema changes in the PR | false   | No       |
+| failOnError   | Fail the check if breaking changes or composition errors are found      | true    | No       |
 
 ## Credits
 
