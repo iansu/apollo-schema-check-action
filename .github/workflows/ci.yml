@@ -30,6 +30,7 @@ jobs:
       - name: Test
         run: yarn test --coverage
       - name: Commit build
+        if: github.ref == 'refs/heads/master'
         uses: endbug/add-and-commit@v4
         with:
           add: 'build'
