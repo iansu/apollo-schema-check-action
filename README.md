@@ -1,6 +1,7 @@
 # Apollo Schema Check Action
 
 [![Build status](https://github.com/iansu/apollo-schema-check-action/workflows/CI/badge.svg)](https://github.com/iansu/apollo-schema-check-action/actions)
+[![codecov](https://codecov.io/gh/iansu/apollo-schema-check-action/branch/master/graph/badge.svg)](https://codecov.io/gh/iansu/apollo-schema-check-action)
 
 A GitHub Action to run a schema check using the [Apollo CLI](https://www.apollographql.com/docs/devtools/cli/) and [Apollo Studio](https://www.apollographql.com/docs/studio/) (formerly Graph Manager) and post the results as a comment on a Pull Request
 
