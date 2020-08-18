@@ -39,9 +39,12 @@ const formatMessage = (output: string, existingComment: boolean): string | undef
   }
 
   if (title) {
-    message = message.replace('Apollo Service Check\n\n', `Apollo Schema Check\n\n#### ${title}\n`);
+    message = message.replace(
+      '### Apollo Service Check\n',
+      `### Apollo Schema Check\n#### ${title}\n`
+    );
   } else {
-    message = message.replace('Apollo Service Check', `Apollo Schema Check`);
+    message = message.replace('### Apollo Service Check', `### Apollo Schema Check`);
   }
 
   debug('message', message);
