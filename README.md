@@ -14,12 +14,13 @@ name: Schema Check
 
 on:
   pull_request:
-    types: ['opened', 'reopened', 'synchronize']
+    types: [opened, reopened, synchronize]
 
 jobs:
-  check schema:
+  check_schema:
+    name: check schema
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v2
       - name: Customer API check
@@ -50,6 +51,14 @@ Some additional settings have also been added:
 | title         | The name of the graph which will be shown in the comment                |         | No       |
 | alwaysComment | Leave a comment on the PR even if there are no schema changes in the PR | false   | No       |
 | failOnError   | Fail the check if breaking changes or composition errors are found      | true    | No       |
+
+## Why use this instead of the Apollo GitHub App
+
+This Action offers some features that the Apollo GitHub App doesn't. If you don't need these features then you should consider using it instead. The main differences are:
+
+1. You don't have to install an app in your org or repo to use this Action
+1. This Action posts a comment with the results directly on your PR
+1. This Action supports multiple graphs
 
 ## Credits
 

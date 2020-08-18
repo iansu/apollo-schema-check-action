@@ -33,10 +33,10 @@ jobs:
         if: github.ref == 'refs/heads/master'
         uses: endbug/add-and-commit@v4
         with:
-          add: 'build'
+          add: build
           force: true
-          message: 'Add build output'
-          ref: 'v1'
+          message: Add build output
+          ref: v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload coverage
