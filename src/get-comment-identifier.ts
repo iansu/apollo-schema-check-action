@@ -1,6 +1,6 @@
 import { getInput } from '@actions/core';
 
-const getCommentHeader = (): string => {
+const getCommentIdentifier = (): string => {
   const config = getInput('config');
   const graph = getInput('graph');
   const variant = getInput('variant');
@@ -21,4 +21,4 @@ const getCommentHeader = (): string => {
   }
 };
 
-export { getCommentHeader };
+export { getCommentIdentifier };

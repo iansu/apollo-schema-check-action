@@ -5,12 +5,12 @@ import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
 import { isGitHubActions } from './actions';
-import { getCommentHeader } from './get-comment-header';
+import { getCommentIdentifier } from './get-comment-identifier';
 import { getMessage } from './get-message';
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await getMessage(getCommentHeader(), false));
+    console.log(await getMessage(getCommentIdentifier(), false));
 
     return;
   }
@@ -30,7 +30,7 @@ const run = async (): Promise<void> => {
       return;
     }
 
-    const commentHeader = getCommentHeader();
+    const commentIdentifier = getCommentIdentifier();
     const [owner, repo] = githubRepo.split('/');
     const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
@@ -39,8 +39,8 @@ const run = async (): Promise<void> => {
       repo,
       issue_number: pullRequestNumber
     });
-    const existingComment = comments.data.find(comment => comment.body.startsWith(commentHeader));
-    const message = await getMessage(commentHeader, !!existingComment);
+    const existingComment = comments.data.find(comment => comment.body.includes(commentIdentifier));
+    const message = await getMessage(commentIdentifier, !!existingComment);
 
     if (message) {
       if (existingComment) {

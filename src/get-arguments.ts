@@ -42,8 +42,6 @@ const getArguments = (): string[] => {
 
   args.push('--markdown');
 
-  debug('Apollo CLI argument string', args.join(' '));
-
   return args;
 };
 

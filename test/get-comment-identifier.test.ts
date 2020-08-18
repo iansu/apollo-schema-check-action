@@ -1,17 +1,17 @@
 import * as core from '@actions/core';
 import { when } from 'jest-when';
 
-import { getCommentHeader } from '../src/get-comment-header';
+import { getCommentIdentifier } from '../src/get-comment-identifier';
 
 const mockGetInput = jest.spyOn(core, 'getInput');
 
-describe('getCommentHeader', () => {
+describe('getCommentIdentifier', () => {
   test('get header with title', () => {
     when(mockGetInput)
       .calledWith('title')
       .mockReturnValueOnce('Customer API');
 
-    expect(getCommentHeader()).toBe('<!-- apolloSchemaCheckAction name: Customer API -->');
+    expect(getCommentIdentifier()).toBe('<!-- apolloSchemaCheckAction name: Customer API -->');
   });
 
   test('get header with config', () => {
@@ -19,7 +19,9 @@ describe('getCommentHeader', () => {
       .calledWith('config')
       .mockReturnValueOnce('apollo.config.js');
 
-    expect(getCommentHeader()).toBe('<!-- apolloSchemaCheckAction config: apollo.config.js -->');
+    expect(getCommentIdentifier()).toBe(
+      '<!-- apolloSchemaCheckAction config: apollo.config.js -->'
+    );
   });
 
   test('get header with graph and variant', () => {
@@ -30,7 +32,7 @@ describe('getCommentHeader', () => {
       .calledWith('variant')
       .mockReturnValueOnce('production');
 
-    expect(getCommentHeader()).toBe(
+    expect(getCommentIdentifier()).toBe(
       '<!-- apolloSchemaCheckAction graph: my-customer-api@production -->'
     );
   });
@@ -40,7 +42,7 @@ describe('getCommentHeader', () => {
       .calledWith('graph')
       .mockReturnValueOnce('my-customer-api');
 
-    expect(getCommentHeader()).toBe('<!-- apolloSchemaCheckAction graph: my-customer-api -->');
+    expect(getCommentIdentifier()).toBe('<!-- apolloSchemaCheckAction graph: my-customer-api -->');
   });
 
   test('get header with variant', () => {
@@ -48,10 +50,10 @@ describe('getCommentHeader', () => {
       .calledWith('variant')
       .mockReturnValueOnce('production');
 
-    expect(getCommentHeader()).toBe('<!-- apolloSchemaCheckAction variant: production -->');
+    expect(getCommentIdentifier()).toBe('<!-- apolloSchemaCheckAction variant: production -->');
   });
 
   test('get header with nothing', () => {
-    expect(getCommentHeader()).toBe('<!-- apolloSchemaCheckAction -->');
+    expect(getCommentIdentifier()).toBe('<!-- apolloSchemaCheckAction -->');
   });
 });
