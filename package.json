@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@octokit/action": "^3.0.1",
     "@types/debug": "^4.1.5",
