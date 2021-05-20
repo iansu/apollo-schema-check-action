@@ -1,7 +1,7 @@
 {
-  "name": "apollo-schema-check-action",
+  "name": "denan-schema-check-action",
   "description": "A GitHub Action to run a schema check and post the results as a comment on a Pull Request",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {
@@ -11,7 +11,7 @@
   "main": "build/index.js",
   "private": true,
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "start": "ts-node-dev --no-notify -- src/index.ts",
