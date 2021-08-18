@@ -16,7 +16,10 @@ const getArguments = (): string[] => {
     serviceName: getInput('serviceName'),
     validationPeriod: getInput('validationPeriod')
   };
-  const args = [];
+  // see https://www.apollographql.com/docs/studio/github-integration/#github-actions
+  const branch = `--branch=${process.env.GITHUB_REF}#refs/heads/`;
+  const author = `--author=${process.env.GITHUB_ACTOR}`;
+  const args = [branch, author];
 
   debug('token', !!process.env.GITHUB_TOKEN);
 
