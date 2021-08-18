@@ -35,16 +35,21 @@ inputs:
     required: false
   validationPeriod:
     description: 'The size of the time window with which to validate the schema against. You may provide a number (in seconds), or an ISO8601 format duration for more granularity (see: https://en.wikipedia.org/wiki/ISO_8601#Durations)'
+    required: true
   title:
     description: The name of the graph which will be shown in the comment
     required: false
   alwaysComment:
     description: Leave a comment on the PR even if there are no schema changes in the PR
-    default: false
+    default: 'false'
     required: false
   failOnError:
     description: Fail the check if breaking changes or composition errors are found
-    default: true
+    default: 'true'
+    required: false
+  apolloVersion:
+    description: The version of the Apollo CLI to use
+    default: '2.33.6'
     required: false
 
 runs:

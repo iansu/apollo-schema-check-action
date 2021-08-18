@@ -14,17 +14,17 @@ const getMessage = async (
     debug('existing comment found');
   }
 
-  const redactedArgs = args.map(arg =>
+  const redactedArgs = args.map((arg) =>
     arg.startsWith('--key') ? arg.replace(/:[^:]+$/, '***') : arg
   );
 
   console.log(
     'Apollo CLI command',
-    ['npx', 'apollo@2.28.3', 'schema:check', ...redactedArgs].join(' ')
+    ['npx', 'apollo@2.33.6', 'schema:check', ...redactedArgs].join(' ')
   );
 
   try {
-    const output = (await execa('npx', ['apollo@2.28.3', 'schema:check', ...args])).stdout;
+    const output = (await execa('npx', ['apollo@2.33.6', 'schema:check', ...args])).stdout;
 
     console.log(output);
 

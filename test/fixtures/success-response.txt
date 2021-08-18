@@ -1,11 +1,11 @@
 Loading Apollo Project
-Found 0 graph composition errors for service bank-service on graph neo-customer-api@production
+Found 0 graph composition errors for service my-service on graph my-customer-api@production
 Compared 0 schema changes against 206 operations over the last 30 days
 Found 0 breaking changes and 0 compatible changes
 
 ### Apollo Service Check
-🔄 Validated your local schema against metrics from variant `production` for graph `bank-service` on graph `neo-customer-api@production`.
+🔄 Validated your local schema against metrics from variant `production` for graph `my-service` on graph `my-customer-api@production`.
 🔢 Compared **0 schema changes** against **206 operations** seen over the **last 30 days**.
 ✅ Found **no changes**.
 
-🔗 [View your service check details](https://studio.apollographql.com/service/neo-customer-api/check/e242c939-88de-47ce-8c09-25151e1588d3?schemaTag=production&graphCompositionID=c9535a0f-ba98-4226-96bb-8727a8fa0660).
+🔗 [View your service check details](https://studio.apollographql.com/service/my-customer-api/check/e242c939-88df-47ce-8c19-25151e1588d3?schemaTag=production&graphCompositionID=c9535a0f-bc98-4226-96ba-8727a8fa0660).
