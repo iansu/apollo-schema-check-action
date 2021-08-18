@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
@@ -37,9 +35,11 @@ const run = async (): Promise<void> => {
     const comments = await octokit.issues.listComments({
       owner,
       repo,
-      issue_number: pullRequestNumber
+      issue_number: pullRequestNumber,
     });
-    const existingComment = comments.data.find(comment => comment.body.includes(commentIdentifier));
+    const existingComment = comments.data.find((comment) =>
+      comment?.body?.includes(commentIdentifier)
+    );
     const message = await getMessage(commentIdentifier, !!existingComment);
 
     if (message) {
@@ -47,13 +47,13 @@ const run = async (): Promise<void> => {
         octokit.issues.updateComment({
           ...context.repo,
           comment_id: existingComment.id,
-          body: message
+          body: message,
         });
       } else {
         octokit.issues.createComment({
           ...context.repo,
           issue_number: pullRequestNumber,
-          body: message
+          body: message,
         });
       }
     }

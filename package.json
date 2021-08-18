@@ -1,7 +1,7 @@
 {
   "name": "apollo-schema-check-action",
   "description": "A GitHub Action to run a schema check and post the results as a comment on a Pull Request",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {
@@ -21,7 +21,9 @@
     "clean:modules": "rimraf node_modules",
     "lint": "eslint \"**/*.{ts,js}\"",
     "format": "prettier --write **/*.ts",
-    "format:check": "prettier --check **/*.ts"
+    "format:check": "prettier --check **/*.ts",
+    "precommit": "lint-staged",
+    "prepare": "husky install"
   },
   "keywords": [
     "actions",
@@ -47,26 +49,26 @@
     ]
   },
   "devDependencies": {
-    "@actions/core": "^1.2.4",
-    "@actions/github": "^4.0.0",
-    "@octokit/action": "^3.0.1",
-    "@types/debug": "^4.1.5",
-    "@types/jest": "^26.0.4",
-    "@types/jest-when": "^2.7.1",
-    "@types/node": "^14.0.23",
-    "@zeit/ncc": "^0.22.3",
-    "debug": "^4.1.1",
-    "eslint": "^6.8.0",
-    "eslint-config-neo": "^0.5.2",
-    "execa": "^4.0.3",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "jest-when": "^2.7.2",
-    "lint-staged": "^10.2.11",
-    "prettier": "^1.19.1",
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/action": "^3.15.0",
+    "@types/debug": "^4.1.7",
+    "@types/jest": "^27.0.1",
+    "@types/jest-when": "^2.7.3",
+    "@types/node": "^16.6.1",
+    "@vercel/ncc": "0.29.0",
+    "debug": "^4.3.2",
+    "eslint": "^7.32.0",
+    "eslint-config-neo": "^0.6.2",
+    "execa": "^5.1.1",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "jest-when": "^3.3.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.1.2",
-    "ts-node-dev": "1.0.0-pre.44",
-    "typescript": "^3.9.7"
+    "ts-jest": "^27.0.4",
+    "ts-node-dev": "1.1.8",
+    "typescript": "^4.3.5"
   }
 }
