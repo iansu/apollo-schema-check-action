@@ -36,6 +36,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+When you create a new PR that includes schema changes the results of the schema check will be posted as a comment. Here's an example of what that looks like:
+
+![Screenshot](./screenshot.png)
+
+Note that you won't see a comment if your PR doesn't include any schema changes.
+
 ## Settings
 
 Almost all of the settings from the [Apollo CLI `schema:check` command](https://github.com/apollographql/apollo-tooling/tree/master/packages/apollo#apollo-servicecheck) are supported, with the following differences:
