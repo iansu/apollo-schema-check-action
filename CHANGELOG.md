@@ -1,5 +1,9 @@
 # Apollo Schema Check Action Changelog
 
+## 1.2.1 (December 2, 2021)
+
+- Improve output for debugging
+
 ## 1.2.0 (August 18, 2021)
 
 - Add branch and author information when pushing to Apollo Studio

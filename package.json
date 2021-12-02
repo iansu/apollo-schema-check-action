@@ -1,7 +1,7 @@
 {
   "name": "apollo-schema-check-action",
   "description": "A GitHub Action to run a schema check and post the results as a comment on a Pull Request",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {

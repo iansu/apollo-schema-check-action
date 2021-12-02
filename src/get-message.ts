@@ -1,6 +1,6 @@
 import execa from 'execa';
 
-import { debug } from './actions';
+import { debug, info, error as logError } from './actions';
 import { getArguments } from './get-arguments';
 import { formatMessage } from './format-message';
 
@@ -18,15 +18,12 @@ const getMessage = async (
     arg.startsWith('--key') ? arg.replace(/:[^:]+$/, '***') : arg
   );
 
-  console.log(
-    'Apollo CLI command',
-    ['npx', 'apollo@2.33.6', 'schema:check', ...redactedArgs].join(' ')
-  );
+  info('Apollo CLI command', ['npx', 'apollo@2.33.6', 'schema:check', ...redactedArgs].join(' '));
 
   try {
     const output = (await execa('npx', ['apollo@2.33.6', 'schema:check', ...args])).stdout;
 
-    console.log(output);
+    info(output);
 
     const message = formatMessage(output, existingComment);
 
@@ -37,11 +34,11 @@ const getMessage = async (
     }
   } catch (error) {
     if (error.exitCode !== 1) {
-      console.error(`Apollo CLI error: exit code ${error.exitCode}`, error);
+      logError(`Apollo CLI error: exit code ${error.exitCode}`, error);
 
       throw new Error('Error running Apollo CLI');
     } else {
-      console.log(error.stdout);
+      info(error.stdout);
 
       const message = formatMessage(error.stdout, existingComment);
 
