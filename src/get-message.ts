@@ -1,6 +1,6 @@
 import execa from 'execa';
 
-import { debug, info, error as logError } from './actions';
+import { debug, info } from './actions';
 import { getArguments } from './get-arguments';
 import { formatMessage } from './format-message';
 
@@ -34,7 +34,7 @@ const getMessage = async (
     }
   } catch (error) {
     if (error.exitCode !== 1) {
-      logError(`Apollo CLI error: exit code ${error.exitCode}`, error);
+      info(`Apollo CLI error: exit code ${error.exitCode}`, error);
 
       throw new Error('Error running Apollo CLI');
     } else {
