@@ -8,8 +8,6 @@ const formatMessage = (output: string, existingComment: boolean): string | undef
   const alwaysComment = getInput('alwaysComment');
   const failOnError = getInput('failOnError');
 
-  debug(output);
-
   if (startOfMessage === -1) {
     throw new Error('Received unexpected output from Apollo CLI');
   }

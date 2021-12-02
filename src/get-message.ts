@@ -18,12 +18,12 @@ const getMessage = async (
     arg.startsWith('--key') ? arg.replace(/:[^:]+$/, '***') : arg
   );
 
-  info('Apollo CLI command', ['npx', 'apollo@2.33.6', 'schema:check', ...redactedArgs].join(' '));
+  info('Apollo CLI command', ['npx', 'apollo@2.33.9', 'schema:check', ...redactedArgs].join(' '));
 
   try {
-    const output = (await execa('npx', ['apollo@2.33.6', 'schema:check', ...args])).stdout;
+    const output = (await execa('npx', ['apollo@2.33.9', 'schema:check', ...args])).stdout;
 
-    info(output);
+    info('Apollo CLI output', output);
 
     const message = formatMessage(output, existingComment);
 
