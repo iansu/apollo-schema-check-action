@@ -33,12 +33,13 @@ const getMessage = async (
       return;
     }
   } catch (error) {
-    if (error.exitCode !== 1) {
-      info(`Apollo CLI error: exit code ${error.exitCode}`, error);
+    info(`Apollo CLI error: exit code ${error.exitCode}`, error);
 
+    if (error.exitCode !== 1) {
       throw new Error('Error running Apollo CLI');
     } else {
-      info(error.stdout);
+      info('stdout', error.stdout);
+      info('stderr', error.stderr);
 
       const message = formatMessage(error.stdout, existingComment);
 
