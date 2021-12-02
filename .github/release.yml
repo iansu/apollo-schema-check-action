@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The version tag of the release. This should match version in package.json and start with `v`. For example: `v1.0.0`'
+        required: true
+      branch:
+        description: 'The major version branch to commit to. Default v1.'
+        default: v1
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          cache: yarn
+      - name: Install
+        run: yarn --prefer-offline --frozen-lockfile --no-progress --non-interactive
+      - name: Lint
+        run: yarn lint
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test
+      - name: Commit
+        uses: endbug/add-and-commit@45a4ede867982d5d85997a82529b1d9dd0328e7f
+        with:
+          add: 'build --force'
+          branch: ${{ github.event.inputs.branch }}
+          message: 'Add build output'
+          pull: 'NO-PULL'
+          push: 'origin ${{ github.event.inputs.branch }} --force'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag
+        uses: ncipollo/release-action@v1
+        with:
+          body: 'TODO: Add CHANGELOG entry'
+          tag: ${{ github.event.inputs.tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
