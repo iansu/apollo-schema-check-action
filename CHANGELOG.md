@@ -1,5 +1,10 @@
 # Apollo Schema Check Action Changelog
 
+## 1.2.2 (December 2, 2021)
+
+- Add additional debug logging
+- Use the `apolloVersion` argument that was previously added but not used in the code
+
 ## 1.2.1 (December 2, 2021)
 
 - Improve output for debugging

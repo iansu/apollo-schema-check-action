@@ -9,7 +9,7 @@ const formatMessage = (output: string, existingComment: boolean): string | undef
   const failOnError = getInput('failOnError');
 
   if (startOfMessage === -1) {
-    throw new Error('Error running Apollo CLI');
+    throw new Error('Received unexpected output from Apollo CLI');
   }
 
   if (alwaysComment !== 'true' && output.includes('null operations')) {
