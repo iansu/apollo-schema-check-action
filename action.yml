@@ -13,7 +13,7 @@ inputs:
     description: The variant to check the proposed schema against
     required: false
   endpoint:
-    description: The URL for the CLI use to introspect your service
+    description: The URL for the CLI to use to introspect your service
     required: false
   header:
     description: 'Additional header to send to server for introspectionQuery. Multiple headers can be provided as a comma separated list. NOTE: The `--endpoint` flag is REQUIRED if using the `--header` flag.'
