@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "commonjs",
+    "module": "esnext",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "target": "es6",
+    "target": "es2020",
+    "lib": ["es2020"],
     "moduleResolution": "node",
     "outDir": "build",
     "baseUrl": ".",

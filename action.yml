@@ -15,17 +15,17 @@ inputs:
   endpoint:
     description: The URL for the CLI to use to introspect your service
     required: false
-  header:
-    description: 'Additional header to send to server for introspectionQuery. Multiple headers can be provided as a comma separated list. NOTE: The `--endpoint` flag is REQUIRED if using the `--header` flag.'
+  headers:
+    description: 'Additional headers to send to server for introspectionQuery. Multiple headers can be provided as a comma separated list. NOTE: The `endpoint` input is REQUIRED if using the `headers` input.'
     required: false
-  key:
+  apolloKey:
     description: The API key to use for authentication to Apollo Graph Manager
-    required: false
+    required: true
   localSchemaFile:
-    description: Path to one or more local GraphQL schema file(s), as introspection result or SDL. Supports comma-separated list of paths (ex. `--localSchemaFile=schema.graphql,extensions.graphql`)
+    description: Path to one or more local GraphQL SDL file(s). Supports comma-separated list of paths (ex. `schema.graphql,extensions.graphql`)
     required: false
   queryCountThreshold:
-    description: Minimum number of requests within the requested time window for a query to be considered.
+    description: Minimum number of requests within the requested time window for a query to be considered
     required: false
   queryCountThresholdPercentage:
     description: Number of requests within the requested time window for a query to be considered, relative to total request count. Expected values are between 0 and 0.05 (minimum 5% of total request volume)
@@ -47,13 +47,9 @@ inputs:
     description: Fail the check if breaking changes or composition errors are found
     default: 'true'
     required: false
-  apolloVersion:
-    description: The version of the Apollo CLI to use
-    default: '2.33.9'
-    required: false
 
 runs:
-  using: node12
+  using: node16
   main: build/index.js
 
 branding:

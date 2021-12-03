@@ -1,20 +1,22 @@
+import util from 'node:util';
+
 import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
 import { isGitHubActions } from './actions';
+import { checkSchema } from './check-schema';
 import { getCommentIdentifier } from './get-comment-identifier';
-import { getMessage } from './get-message';
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await getMessage(getCommentIdentifier(), false));
+    console.log(await checkSchema(getCommentIdentifier()));
 
     return;
   }
 
   try {
-    if (context.payload.pull_request == null) {
+    if (!context.payload.pull_request) {
       setFailed('No pull request found');
 
       return;
@@ -40,7 +42,7 @@ const run = async (): Promise<void> => {
     const existingComment = comments.data.find((comment) =>
       comment?.body?.includes(commentIdentifier)
     );
-    const message = await getMessage(commentIdentifier, !!existingComment);
+    const message = await checkSchema(commentIdentifier);
 
     if (message) {
       if (existingComment) {
@@ -58,7 +60,11 @@ const run = async (): Promise<void> => {
       }
     }
   } catch (error) {
-    setFailed(error.message);
+    if (error instanceof Error) {
+      setFailed(error.message);
+    } else {
+      setFailed(util.inspect(error));
+    }
   }
 };
 

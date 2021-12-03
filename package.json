@@ -1,7 +1,7 @@
 {
   "name": "apollo-schema-check-action",
   "description": "A GitHub Action to run a schema check and post the results as a comment on a Pull Request",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {
@@ -11,11 +11,11 @@
   "main": "build/index.js",
   "private": true,
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "start": "ts-node-dev --no-notify -- src/index.ts",
-    "build": "NODE_ENV=production ncc build src/index.ts -o build --minify",
+    "build": "NODE_ENV=production rollup -c",
     "test": "jest",
     "clean": "rimraf build",
     "clean:modules": "rimraf node_modules",
@@ -29,7 +29,7 @@
     "actions",
     "github",
     "apollo",
-    "server",
+    "graphql",
     "schema",
     "check",
     "javascript",
@@ -49,26 +49,33 @@
     ]
   },
   "devDependencies": {
-    "@actions/core": "^1.4.0",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
-    "@octokit/action": "^3.15.0",
+    "@octokit/action": "^3.18.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@types/debug": "^4.1.7",
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.3",
     "@types/jest-when": "^2.7.3",
-    "@types/node": "^16.6.1",
-    "@vercel/ncc": "0.29.0",
-    "debug": "^4.3.2",
+    "@types/node": "^16.11.11",
+    "debug": "^4.3.3",
     "eslint": "^7.32.0",
     "eslint-config-neo": "^0.6.2",
-    "execa": "^5.1.1",
-    "husky": "^7.0.1",
-    "jest": "^27.0.6",
-    "jest-when": "^3.3.1",
-    "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
+    "graphql": "^16.0.1",
+    "graphql-request": "^3.6.1",
+    "husky": "^7.0.4",
+    "iso8601-duration": "^1.3.0",
+    "jest": "^27.4.3",
+    "jest-when": "^3.4.2",
+    "lint-staged": "^12.1.2",
+    "prettier": "^2.5.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.4",
+    "rollup": "^2.60.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-jest": "^27.0.7",
     "ts-node-dev": "1.1.8",
-    "typescript": "^4.3.5"
+    "typescript": "^4.5.2"
   }
 }

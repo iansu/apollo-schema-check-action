@@ -3,11 +3,15 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: 'The source branch to build. Default main.'
+        default: main
+        required: true
       tag:
         description: 'The version tag of the release. This should match version in package.json and start with `v`. For example: `v1.0.0`'
-        required: true
-      branch:
-        description: 'The major version branch to commit to. Default v1.'
+        required: false
+      releaseBranch:
+        description: 'The release branch to commit to. Default v1.'
         default: v1
         required: true
 
@@ -17,30 +21,33 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - uses: actions/setup-node@v2
         with:
-          node-version: 12
-          cache: yarn
+          node-version: 16
+          cache: npm
       - name: Install
-        run: yarn --prefer-offline --frozen-lockfile --no-progress --non-interactive
+        run: npm install --prefer-offline
       - name: Lint
-        run: yarn lint
+        run: npm run lint
       - name: Build
-        run: yarn build
+        run: npm run build
       - name: Test
-        run: yarn test
+        run: npm test
       - name: Commit
         uses: endbug/add-and-commit@45a4ede867982d5d85997a82529b1d9dd0328e7f
         with:
           add: 'build --force'
-          branch: ${{ github.event.inputs.branch }}
+          branch: ${{ github.event.inputs.releaseBranch }}
           message: 'Add build output'
           pull: 'NO-PULL'
-          push: 'origin ${{ github.event.inputs.branch }} --force'
+          push: 'origin ${{ github.event.inputs.releaseBranch }} --force'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag
         uses: ncipollo/release-action@v1
+        if: github.events.inputs.tag
         with:
           body: 'TODO: Add CHANGELOG entry'
           tag: ${{ github.event.inputs.tag }}
