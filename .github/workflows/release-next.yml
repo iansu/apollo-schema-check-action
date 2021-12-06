@@ -3,12 +3,13 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'The version tag of the release. This should match version in package.json and start with `v`. For example: `v1.0.0`'
+      branch:
+        description: 'The source branch to build. Default main.'
+        default: main
         required: true
       releaseBranch:
-        description: 'The release branch to commit to. Default v2.'
-        default: v2
+        description: 'The release branch to commit to. Default next.'
+        default: next
         required: true
 
 jobs:
@@ -17,6 +18,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -41,12 +44,5 @@ jobs:
           push: 'origin ${{ github.event.inputs.releaseBranch }} --force'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Tag
-        uses: ncipollo/release-action@v1
-        if: github.events.inputs.tag
-        with:
-          body: 'TODO: Add CHANGELOG entry'
-          tag: ${{ github.event.inputs.tag }}
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Reinstall dev dependencies
         run: npm install --prefer-offline

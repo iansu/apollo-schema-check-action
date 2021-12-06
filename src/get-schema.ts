@@ -1,4 +1,6 @@
 import { readFile } from 'fs/promises';
+import { getIntrospectionQuery } from 'graphql';
+import { GraphQLClient } from 'graphql-request';
 
 export interface GetSchemaArgs {
   localSchemaFiles?: string | string[];
@@ -33,7 +35,15 @@ const getSchema = async (args: GetSchemaArgs): Promise<string> => {
       headers = args.headers;
     }
 
-    // TODO: introspect schema from local endpoint
+    try {
+      const graphQLClient = new GraphQLClient(args.endpoint, {
+        headers,
+      });
+
+      schema = await graphQLClient.request(getIntrospectionQuery());
+    } catch (error) {
+      throw new Error(JSON.stringify(error));
+    }
   } else {
     throw new Error('You must provide either a path to a local schema file or an endpoint to introspect');
   }

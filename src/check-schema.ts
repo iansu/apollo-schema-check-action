@@ -4,35 +4,45 @@ import { getInput } from '@actions/core';
 import { getQueryVariables, QueryVariables } from './get-arguments';
 import { formatMessage } from './format-message';
 
+export interface CompositionValidationErrorLocation {
+  line: number;
+  column: number;
+}
+
+export interface CompositionValidationError {
+  message: string;
+  code: string;
+  locations: CompositionValidationErrorLocation[];
+}
+
+export interface CompositionValidationResult {
+  compositionSuccess: boolean;
+  errors: CompositionValidationError[] | null;
+}
+
+export interface DiffToPreviousChanges {
+  severity: string;
+  code: string;
+  description: string;
+}
+
+export interface DiffToPrevious {
+  severity: string;
+  numberOfCheckedOperations: number;
+  numberOfAffectedOperations: number;
+  changes: DiffToPreviousChanges[];
+}
+
+export interface CheckSchemaResult {
+  diffToPrevious: DiffToPrevious;
+  targetUrl: string;
+}
+
 export interface ApolloStudioResponse {
   service: {
     checkPartialSchema: {
-      compositionValidationResult: {
-        compositionSuccess: boolean;
-        errors:
-          | {
-              message: string;
-              code: string;
-              locations: {
-                line: number;
-                column: number;
-              }[];
-            }[]
-          | null;
-      };
-      checkSchemaResult: {
-        diffToPrevious: {
-          severity: string;
-          numberOfCheckedOperations: number;
-          numberOfAffectedOperations: number;
-          changes: {
-            severity: string;
-            code: string;
-            description: string;
-          }[];
-        };
-        targetUrl: string;
-      } | null;
+      compositionValidationResult: CompositionValidationResult;
+      checkSchemaResult: CheckSchemaResult | null;
     };
   };
 }
