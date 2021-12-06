@@ -29,7 +29,7 @@ jobs:
           variant: current
           localSchemaFile: test/fixtures/test-schema.graphql
           validationPeriod: P1M
-          key: ${{ secrets.APOLLO_KEY_TEST }}
+          apolloKey: ${{ secrets.APOLLO_KEY_TEST }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload federated schema
@@ -41,6 +41,6 @@ jobs:
           localSchemaFile: test/fixtures/test-schema.graphql
           serviceName: test-service
           validationPeriod: P1M
-          key: ${{ secrets.APOLLO_KEY_FEDERATED_TEST }}
+          apolloKey: ${{ secrets.APOLLO_KEY_FEDERATED_TEST }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -4,7 +4,7 @@ import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
-import { isGitHubActions } from './actions';
+import { isGitHubActions, info } from './actions';
 import { checkSchema } from './check-schema';
 import { getCommentIdentifier } from './get-comment-identifier';
 
@@ -15,8 +15,13 @@ const run = async (): Promise<void> => {
     return;
   }
 
+  info(process.env);
+  info(context);
+
+  const pullRequestNumber = process.env.GITHUB_REF?.match(/refs\/pull\/(\d+)\/merge/)?.[1];
+
   try {
-    if (!context.payload.pull_request) {
+    if (!pullRequestNumber) {
       setFailed('No pull request found');
 
       return;
@@ -32,12 +37,11 @@ const run = async (): Promise<void> => {
 
     const commentIdentifier = getCommentIdentifier();
     const [owner, repo] = githubRepo.split('/');
-    const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
     const comments = await octokit.issues.listComments({
       owner,
       repo,
-      issue_number: pullRequestNumber,
+      issue_number: Number.parseInt(pullRequestNumber, 10),
     });
     const existingComment = comments.data.find((comment) => comment?.body?.includes(commentIdentifier));
     const message = await checkSchema(commentIdentifier);
@@ -52,7 +56,7 @@ const run = async (): Promise<void> => {
       } else {
         octokit.issues.createComment({
           ...context.repo,
-          issue_number: pullRequestNumber,
+          issue_number: Number.parseInt(pullRequestNumber),
           body: message,
         });
       }
