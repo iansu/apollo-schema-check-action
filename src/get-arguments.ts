@@ -149,7 +149,7 @@ const getQueryVariables = async (): Promise<QueryVariables> => {
     variant: getInput('variant'),
     endpoint: getInput('endpoint'),
     headers: getInput('headers'),
-    apolloKey: getInput('apolloKey'),
+    apolloKey: getInput('key'),
     localSchemaFile: getInput('localSchemaFile'),
     queryCountThreshold: getInput('queryCountThreshold'),
     queryCountThresholdPercentage: getInput('queryCountThresholdPercentage'),

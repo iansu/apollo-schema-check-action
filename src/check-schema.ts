@@ -9,7 +9,7 @@ const apolloStudioEndpoint = 'https://graphql.api.apollographql.com/api/graphql'
 const checkSchema = async (commentIdentifier: string): Promise<string | undefined> => {
   const graphQLClient = new GraphQLClient(apolloStudioEndpoint, {
     headers: {
-      'x-api-key': getInput('apolloKey'),
+      'x-api-key': getInput('key'),
     },
   });
 

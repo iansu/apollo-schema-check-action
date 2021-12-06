@@ -4,7 +4,7 @@ import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
-import { isGitHubActions, info } from './actions';
+import { isGitHubActions, debug } from './actions';
 import { checkSchema } from './check-schema';
 import { getCommentIdentifier } from './get-comment-identifier';
 
@@ -15,8 +15,14 @@ const run = async (): Promise<void> => {
     return;
   }
 
-  info(process.env);
-  info(context);
+  debug(process.env);
+  debug(context);
+
+  if (context.eventName !== 'pull_request') {
+    setFailed('This action only works on the pull_request event');
+
+    return;
+  }
 
   const pullRequestNumber = process.env.GITHUB_REF?.match(/refs\/pull\/(\d+)\/merge/)?.[1];
 

@@ -18,7 +18,7 @@ inputs:
   headers:
     description: 'Additional headers to send to server for introspectionQuery. Multiple headers can be provided as a comma separated list. NOTE: The `endpoint` input is REQUIRED if using the `headers` input.'
     required: false
-  apolloKey:
+  key:
     description: The API key to use for authentication to Apollo Graph Manager
     required: true
   localSchemaFile:
