@@ -103,7 +103,7 @@ const formatMessage = (
   message += getSummary(output, variables);
 
   if (output.service.checkPartialSchema.compositionValidationResult.errors?.length) {
-    message += '#### Schema Composition Errors\n```';
+    message += '#### Schema Composition Errors\n\n```\n';
 
     for (const error of output.service.checkPartialSchema.compositionValidationResult.errors) {
       message += `${error.message}\n`;
