@@ -35,10 +35,12 @@ jobs:
         run: npm run build
       - name: Test
         run: npm test
+      - name: Remove dev dependencies
+        run: npm install --omit dev --prefer-offline
       - name: Commit
         uses: endbug/add-and-commit@45a4ede867982d5d85997a82529b1d9dd0328e7f
         with:
-          add: 'build --force'
+          add: 'build node_modules --force'
           branch: ${{ github.event.inputs.releaseBranch }}
           message: 'Add build output'
           pull: 'NO-PULL'
@@ -52,3 +54,5 @@ jobs:
           body: 'TODO: Add CHANGELOG entry'
           tag: ${{ github.event.inputs.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Reinstall dev dependencies
+        run: npm install --prefer-offline
