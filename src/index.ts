@@ -4,7 +4,7 @@ import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
-import { isGitHubActions, debug } from './actions';
+import { isGitHubActions, debug } from './actions-helpers';
 import { checkSchema } from './check-schema';
 import { getCommentIdentifier } from './get-comment-identifier';
 

@@ -1,7 +1,7 @@
 import { getInput, setFailed } from '@actions/core';
 import prettyMs from 'pretty-ms';
 
-import { info, debug } from './actions';
+import { info, debug } from './actions-helpers';
 import { ApolloStudioResponse, CheckSchemaResult, CompositionValidationResult } from './check-schema';
 import { QueryVariables } from './get-arguments';
 
@@ -68,8 +68,7 @@ const formatMessage = (
   const alwaysComment = getInput('alwaysComment');
   const failOnError = getInput('failOnError');
 
-  info('Apollo Studio response');
-  info(output);
+  debug('Apollo Studio response', JSON.stringify(output, null, 2));
 
   const checkSchemaResult = output.service.checkPartialSchema.checkSchemaResult;
   const compositionValidationResult = output.service.checkPartialSchema.compositionValidationResult;

@@ -1,11 +1,10 @@
 import { readFile } from 'fs/promises';
 import { parse, toSeconds } from 'iso8601-duration';
 import { getInput } from '@actions/core';
-import { Octokit } from '@octokit/action';
-import { context } from '@actions/github';
 
-import { debug } from './actions';
+import { debug } from './actions-helpers';
 import { getSchema } from './get-schema';
+import { getCommitDetails, CommitDetails } from './get-commit-details';
 
 export interface ActionInputs {
   config?: string;
@@ -49,14 +48,6 @@ export interface MergedConfig {
   };
 }
 
-export interface CommitDetails {
-  branch?: string;
-  commit: string;
-  committer?: string;
-  message?: string;
-  remoteUrl?: string;
-}
-
 export interface QueryVariables {
   graph: string;
   variant: string;
@@ -80,32 +71,6 @@ const getApolloConfigFile = async (file: string): Promise<ApolloConfigFile> => {
   } catch {
     throw new Error(`Could not parse Apollo config file: ${file}`);
   }
-};
-
-const getCommitDetails = async (): Promise<CommitDetails> => {
-  if (!process.env.GITHUB_REPOSITORY) {
-    throw new Error('GITHUB_REPOSITORY is not set');
-  }
-
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-  const hash = process.env.GITHUB_SHA;
-  const pullNumber = context?.payload.pull_request?.number;
-
-  if (!owner || !repo || !hash || !pullNumber) {
-    throw new Error('Could not determine repository details');
-  }
-
-  const octokit = new Octokit();
-  const commitDetails = await octokit.repos.getCommit({ owner, repo, ref: hash });
-  const pullDetails = await octokit.pulls.get({ owner, repo, pull_number: pullNumber });
-
-  return {
-    branch: pullDetails?.data?.head?.ref,
-    commit: hash,
-    committer: commitDetails?.data?.committer?.login,
-    message: commitDetails?.data?.commit?.message,
-    remoteUrl: commitDetails?.data?.html_url,
-  };
 };
 
 const stringToNumber = (input?: string): number | undefined => {
