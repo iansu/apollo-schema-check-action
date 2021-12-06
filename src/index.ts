@@ -10,7 +10,7 @@ import { getCommentIdentifier } from './get-comment-identifier';
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await checkSchema(getCommentIdentifier()));
+    console.log(await checkSchema(getCommentIdentifier(), false));
 
     return;
   }
@@ -50,7 +50,7 @@ const run = async (): Promise<void> => {
       issue_number: Number.parseInt(pullRequestNumber, 10),
     });
     const existingComment = comments.data.find((comment) => comment?.body?.includes(commentIdentifier));
-    const message = await checkSchema(commentIdentifier);
+    const message = await checkSchema(commentIdentifier, !!existingComment);
 
     if (message) {
       if (existingComment) {
