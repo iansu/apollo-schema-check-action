@@ -1,23 +1,23 @@
 import * as core from '@actions/core';
 import { when } from 'jest-when';
 
-import { getArguments } from '../src/get-arguments';
+import { getQueryVariables } from '../src/get-arguments';
 
 const mockGetInput = jest.spyOn(core, 'getInput');
 
-describe.skip('getArguments', () => {
+describe.skip('getQueryVariables', () => {
   test('graph with no key throws', () => {
     when(mockGetInput).calledWith('graph').mockReturnValueOnce('my-customer-api');
     when(mockGetInput).calledWith('key').mockReturnValueOnce('');
 
-    expect(() => getArguments()).toThrow('You must provide an Apollo key');
+    expect(() => getQueryVariables()).toThrow('You must provide an Apollo key');
   });
 
   test('no graph and no config throws', () => {
     when(mockGetInput).calledWith('config').mockReturnValueOnce('');
     when(mockGetInput).calledWith('graph').mockReturnValueOnce('');
 
-    expect(() => getArguments()).toThrow('You must provide either a config file or a graph name');
+    expect(() => getQueryVariables()).toThrow('You must provide either a config file or a graph name');
   });
 
   test('no headers does not set argument', () => {
@@ -25,7 +25,7 @@ describe.skip('getArguments', () => {
     when(mockGetInput).calledWith('key').mockReturnValueOnce('secret-key');
     when(mockGetInput).calledWith('headers').mockReturnValueOnce('');
 
-    const args = getArguments();
+    const args = getQueryVariables();
 
     expect(args).toContain('--graph=my-customer-api');
     expect(args).toContain('--key=secret-key');
@@ -37,7 +37,7 @@ describe.skip('getArguments', () => {
     when(mockGetInput).calledWith('key').mockReturnValueOnce('secret-key');
     when(mockGetInput).calledWith('header').mockReturnValueOnce('X-My-Header-1=Hello');
 
-    const args = getArguments();
+    const args = getQueryVariables();
 
     expect(args).toContain('--graph=my-customer-api');
     expect(args).toContain('--key=secret-key');
@@ -50,7 +50,7 @@ describe.skip('getArguments', () => {
     when(mockGetInput).calledWith('key').mockReturnValueOnce('secret-key');
     when(mockGetInput).calledWith('header').mockReturnValueOnce('X-My-Header-1=Hello, X-My-Header-2=World');
 
-    const args = getArguments();
+    const args = getQueryVariables();
 
     expect(args).toContain('--graph=my-customer-api');
     expect(args).toContain('--key=secret-key');
@@ -72,7 +72,7 @@ describe.skip('getArguments', () => {
     when(mockGetInput).calledWith('serviceName').mockReturnValueOnce('my-service');
     when(mockGetInput).calledWith('validationPeriod').mockReturnValueOnce('p2w');
 
-    const args = getArguments();
+    const args = getQueryVariables();
 
     expect(args).toContain('--config=apollo.config.js');
     expect(args).toContain('--graph=my-customer-api');

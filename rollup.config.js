@@ -4,7 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-const watch = process.env.ROLLUP_WATCH === 'true';
+const production = process.env.NODE_ENV === 'production';
 
 export default {
   input: 'src/index.ts',
@@ -13,6 +13,6 @@ export default {
     format: 'cjs',
     exports: 'named',
   },
-  external: ['fs', 'path', 'util', 'update-notifier'],
-  plugins: [typescript(), json(), commonjs(), nodeResolve(), !watch && terser()],
+  external: ['fs/promises', 'path', 'util', 'vm2'],
+  plugins: [typescript(), json(), commonjs(), nodeResolve(), production && terser()],
 };

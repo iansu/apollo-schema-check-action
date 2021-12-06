@@ -1,4 +1,4 @@
-import util from 'node:util';
+import { inspect } from 'util';
 
 import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
@@ -39,9 +39,7 @@ const run = async (): Promise<void> => {
       repo,
       issue_number: pullRequestNumber,
     });
-    const existingComment = comments.data.find((comment) =>
-      comment?.body?.includes(commentIdentifier)
-    );
+    const existingComment = comments.data.find((comment) => comment?.body?.includes(commentIdentifier));
     const message = await checkSchema(commentIdentifier);
 
     if (message) {
@@ -63,7 +61,7 @@ const run = async (): Promise<void> => {
     if (error instanceof Error) {
       setFailed(error.message);
     } else {
-      setFailed(util.inspect(error));
+      setFailed(inspect(error));
     }
   }
 };

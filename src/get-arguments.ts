@@ -152,13 +152,17 @@ const getQueryVariables = async (): Promise<QueryVariables> => {
     Object.entries(inputs).filter(([key]) => key !== 'apolloApiKey')
   );
 
-  const apolloConfig = inputs.config ? await getApolloConfigFile(inputs.config) : {};
-  const mergedConfig = await getMergedConfig(apolloConfig, inputs);
-  const commitDetails = await getCommitDetails();
-
   if (!inputs.apolloKey) {
     throw new Error('You must provide an Apollo Studio API key');
   }
+
+  if (!inputs.validationPeriod) {
+    throw new Error('You must provide a validation period');
+  }
+
+  const apolloConfig = inputs.config ? await getApolloConfigFile(inputs.config) : {};
+  const mergedConfig = await getMergedConfig(apolloConfig, inputs);
+  const commitDetails = await getCommitDetails();
 
   if (!mergedConfig.graph) {
     throw new Error('You must provide a graph name');
