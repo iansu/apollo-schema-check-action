@@ -44,8 +44,8 @@ export interface MergedConfig {
   };
   queryParameters: {
     from: number;
-    queryCountThreshold?: string;
-    queryCountThresholdPercentage?: string;
+    queryCountThreshold?: number;
+    queryCountThresholdPercentage?: number;
   };
 }
 
@@ -108,6 +108,16 @@ const getCommitDetails = async (): Promise<CommitDetails> => {
   };
 };
 
+const stringToNumber = (input?: string): number | undefined => {
+  if (input && input !== '') {
+    if (Number.isInteger(input)) {
+      return Number.parseInt(input, 10);
+    } else {
+      return Number.parseFloat(input);
+    }
+  }
+};
+
 const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): Promise<MergedConfig> => {
   const mergedConfig = {
     ...inputs,
@@ -118,9 +128,8 @@ const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): 
       from: Number.isInteger(inputs.validationPeriod)
         ? 0 - Number.parseInt(inputs.validationPeriod, 10)
         : 0 - toSeconds(parse(inputs.validationPeriod)),
-      queryCountThreshold: inputs.queryCountThreshold && Number.parseInt(inputs.queryCountThreshold, 10),
-      queryCountThresholdPercentage:
-        inputs.queryCountThresholdPercentage && Number.parseInt(inputs.queryCountThresholdPercentage, 10),
+      queryCountThreshold: stringToNumber(inputs.queryCountThreshold),
+      queryCountThresholdPercentage: stringToNumber(inputs.queryCountThresholdPercentage),
     },
   };
 
