@@ -60,8 +60,8 @@ export interface CommitDetails {
 export interface QueryVariables {
   graph: string;
   variant: string;
-  queryCountThreshold?: string;
-  queryCountThresholdPercentage?: string;
+  queryCountThreshold?: number;
+  queryCountThresholdPercentage?: number;
   serviceName?: string;
   proposedSchema: {
     sdl: string;
@@ -118,8 +118,9 @@ const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): 
       from: Number.isInteger(inputs.validationPeriod)
         ? 0 - Number.parseInt(inputs.validationPeriod, 10)
         : 0 - toSeconds(parse(inputs.validationPeriod)),
-      queryCountThreshold: inputs.queryCountThreshold,
-      queryCountThresholdPercentage: inputs.queryCountThresholdPercentage,
+      queryCountThreshold: inputs.queryCountThreshold && Number.parseInt(inputs.queryCountThreshold, 10),
+      queryCountThresholdPercentage:
+        inputs.queryCountThresholdPercentage && Number.parseInt(inputs.queryCountThresholdPercentage, 10),
     },
   };
 
