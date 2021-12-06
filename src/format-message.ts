@@ -33,9 +33,13 @@ const getSummary = (output: ApolloStudioResponse, variables: QueryVariables): st
       output.service.checkPartialSchema.checkSchemaResult?.diffToPrevious.severity === 'FAILURE'
     ) {
       summary += `❌ Found **${output.service.checkPartialSchema.checkSchemaResult?.diffToPrevious.changes.length} breaking changes**\n\n`;
+
+      setFailed('Breaking changes found');
     }
   } else {
-    summary += `❌ Schema composition failed.\n\n`;
+    summary += `❌ Schema composition failed\n\n`;
+
+    setFailed('Schema composition errors found');
   }
 
   if (output.service.checkPartialSchema.checkSchemaResult?.targetUrl) {
@@ -77,14 +81,17 @@ const formatMessage = (
 
   let message = `${commentIdentifier}\n\n`;
 
-  if (failOnError && /\d+ breaking change/.test(message)) {
+  if (failOnError && output.service.checkPartialSchema.checkSchemaResult?.diffToPrevious.severity === 'FAILURE') {
     debug('Breaking changes found');
     debug('message', message);
     setFailed('Breaking changes found');
-  } else if (failOnError && /\d+ composition error/.test(message)) {
+  } else if (
+    failOnError &&
+    output.service.checkPartialSchema.compositionValidationResult.compositionSuccess === false
+  ) {
     debug('Composition errors found');
     debug('message', message);
-    setFailed('Composition errors found');
+    setFailed('Schema composition errors found');
   }
 
   if (title) {
@@ -96,14 +103,16 @@ const formatMessage = (
   message += getSummary(output, variables);
 
   if (output.service.checkPartialSchema.compositionValidationResult.errors?.length) {
-    message += '#### Schema Composition Errors\n';
+    message += '#### Schema Composition Errors\n```';
 
     for (const error of output.service.checkPartialSchema.compositionValidationResult.errors) {
-      message += `- \`${error.message}\`\n`;
+      message += `${error.message}\n`;
     }
+
+    message += '```\n';
   }
 
-  debug('message', message);
+  info('message', message);
 
   return message;
 };
