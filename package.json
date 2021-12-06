@@ -23,8 +23,7 @@
     "lint": "eslint \"**/*.{ts,js}\"",
     "format": "prettier --write **/*.ts",
     "format:check": "prettier --check **/*.ts",
-    "precommit": "lint-staged",
-    "prepare": "husky install"
+    "precommit": "lint-staged"
   },
   "keywords": [
     "actions",
