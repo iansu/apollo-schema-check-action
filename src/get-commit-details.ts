@@ -34,7 +34,7 @@ const getCommitDetails = async (): Promise<CommitDetails> => {
   return {
     branch: pullDetails?.data?.head?.ref,
     commit: hash,
-    committer: commitDetails?.data?.committer?.login,
+    committer: commitDetails?.data?.author?.login,
     message: commitDetails?.data?.commit?.message,
     remoteUrl: commitDetails?.data?.html_url,
   };

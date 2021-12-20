@@ -7,7 +7,7 @@ A GitHub Action to run a schema check using the [Apollo CLI](https://www.apollog
 
 ## Usage
 
-Create a file in your repo named `.github/workflows/schema_check.yml` with the following contents:
+Create a file in your repo named `.github/workflows/schema-check.yml` with the following contents:
 
 ```yml
 name: Schema Check
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Customer API check
-        uses: iansu/apollo-schema-check-action@v1
+        uses: iansu/apollo-schema-check-action@v2
         with:
           title: Customer API
           graph: my-customer-api
@@ -41,22 +41,30 @@ When you create a new PR that includes schema changes the results of the schema 
 
 ![Screenshot](./screenshot.png)
 
-Note that you won't see a comment if your PR doesn't include any schema changes.
+Note that you won't see a comment if your PR doesn't include any schema changes. You can change this behaviour by setting `alwaysComment: true`.
 
 ## Settings
 
-Almost all of the settings from the [Apollo CLI `schema:check` command](https://github.com/apollographql/apollo-tooling/tree/master/packages/apollo#apollo-servicecheck) are supported, with the following differences:
+If you provide the path to an [Apollo config file](https://www.apollographql.com/docs/devtools/apollo-config/) in your project any applicable settings from there will be used. If a setting is specified in the Apollo config file and in the workflow settings, the workflow setting will take precedence.
 
-1. The `json` and `markdown` options have been removed because this action requires markdown to post a comment on your PR
-1. The `header` option works slightly different, you pass it a comma separated list of headers. For example: `Header1=Value,Header2=Value2`.
+You must provide either an `endpoint` to introspect your schema or the path to one or more `localSchemaFile`s.
 
-Some additional settings have also been added:
-
-| Name          | Description                                                             | Default | Required |
-| ------------- | ----------------------------------------------------------------------- | ------- | -------- |
-| title         | The name of the graph which will be shown in the comment                |         | No       |
-| alwaysComment | Leave a comment on the PR even if there are no schema changes in the PR | false   | No       |
-| failOnError   | Fail the check if breaking changes or composition errors are found      | true    | No       |
+| Name                          | Description                                                                                                                                                                                                                                   | Default | Required |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| alwaysComment                 | Leave a comment on the PR even if there are no schema changes in the PR                                                                                                                                                                       | false   | No       |
+| config                        | Path to your Apollo config file                                                                                                                                                                                                               |         | No       |
+| endpoint                      | The URL for the CLI to use to introspect your service                                                                                                                                                                                         |         | No       |
+| failOnError                   | Fail the check if breaking changes or composition errors are found                                                                                                                                                                            | true    | No       |
+| graph                         | The ID of the graph in Apollo Graph Manager to check your proposed schema changes against                                                                                                                                                     |         | No       |
+| headers                       | Additional headers to send to server for introspectionQuery. Multiple headers can be provided as a comma separated list. NOTE: The `endpoint` input is REQUIRED if using the `headers` input.                                                 |         | No       |
+| key                           | The API key to use for authentication to Apollo Graph Manager                                                                                                                                                                                 |         | Yes      |
+| localSchemaFile               | Path to one or more local GraphQL SDL file(s). Supports comma-separated list of paths (ex. `schema.graphql,extensions.graphql`)                                                                                                               |         | No       |
+| queryCountThreshold           | Minimum number of requests within the requested time window for a query to be considered                                                                                                                                                      |         | No       |
+| queryCountThresholdPercentage | Number of requests within the requested time window for a query to be considered, relative to total request count. Expected values are between 0 and 0.05 (minimum 5% of total request volume)                                                |         | No       |
+| serviceName                   | Provides the name of the implementing service for a federated graph. This flag will indicate that the schema is a partial schema from a federated service                                                                                     |         | No       |
+| title                         | The name of the graph which will be shown in the comment                                                                                                                                                                                      |         | No       |
+| validationPeriod              | The size of the time window with which to validate the schema against. You may provide a number (in seconds), or an ISO8601 format duration for more granularity (see: [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) |         | Yes      |
+| variant                       | The variant to check the proposed schema against                                                                                                                                                                                              |         | No       |
 
 ## Why use this instead of the Apollo GitHub App
 

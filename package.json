@@ -11,7 +11,8 @@
   "main": "build/index.js",
   "private": true,
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "scripts": {
     "start": "ts-node-dev --no-notify -- src/index.ts",
