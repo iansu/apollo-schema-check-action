@@ -36,11 +36,6 @@
     "javascript",
     "typescript"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{ts,js}": [
       "eslint"
