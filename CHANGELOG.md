@@ -2,7 +2,7 @@
 
 ## 2.0.0 (December 20, 2021)
 
-- Rewrite to not use the Apollo CLI
+- Rewrite to use a direct call to the Apollo Studio API instead of using the Apollo CLI
 
 ## 1.2.2 (December 2, 2021)
 
