@@ -1,0 +1,48 @@
+name: Action Test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  local-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        if: ${{ !env.ACT }}
+        with:
+          node-version: 16
+          cache: npm
+      - uses: actions/setup-node@v2
+        if: ${{ env.ACT }}
+        with:
+          node-version: 16
+      - name: Install
+        run: npm install --prefer-offline
+      - name: Build
+        run: npm run build
+      - name: Upload schema
+        uses: ./
+        with:
+          title: Test API
+          graph: apollo-schema-check-action-test
+          variant: current
+          localSchemaFile: test/fixtures/test-schema.graphql
+          validationPeriod: P1M
+          apolloKey: ${{ secrets.APOLLO_KEY_TEST }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload federated schema
+        uses: ./
+        with:
+          title: Federated Test API
+          graph: apollo-schema-check-action-federated-test
+          variant: current
+          localSchemaFile: test/fixtures/test-schema.graphql
+          serviceName: test-service
+          validationPeriod: P1M
+          apolloKey: ${{ secrets.APOLLO_KEY_FEDERATED_TEST }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

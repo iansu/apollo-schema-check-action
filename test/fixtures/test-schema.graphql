@@ -1,0 +1,40 @@
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    account: Account!
+  }
+
+  type Account {
+    id: ID!
+    userId: ID!
+    name: String!
+    balanceCents: Int!
+    transactions: [Transaction!]!
+  }
+
+  type Transaction {
+    id: ID!
+    accountId: ID!
+    description: String!
+    amountCents: Int!
+    date: String!
+  }
+
+  type Query {
+    user: User!
+  }
+
+  input PurchaseInput {
+    accountId: ID!
+    description: String!
+    amountCents: Int!
+  }
+
+  type PurchaseResponse {
+    transaction: Transaction!
+  }
+
+  type Mutation {
+    purchase(input: PurchaseInput!): PurchaseResponse!
+  }

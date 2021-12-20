@@ -1,20 +1,33 @@
+import { inspect } from 'util';
+
 import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { Octokit } from '@octokit/action';
 
-import { isGitHubActions } from './actions';
+import { isGitHubActions, debug } from './actions-helpers';
+import { checkSchema } from './check-schema';
 import { getCommentIdentifier } from './get-comment-identifier';
-import { getMessage } from './get-message';
 
 const run = async (): Promise<void> => {
   if (!isGitHubActions()) {
-    console.log(await getMessage(getCommentIdentifier(), false));
+    console.log(await checkSchema(getCommentIdentifier(), false));
 
     return;
   }
 
+  debug(process.env);
+  debug(context);
+
+  if (context.eventName !== 'pull_request') {
+    setFailed('This action only works on the pull_request event');
+
+    return;
+  }
+
+  const pullRequestNumber = process.env.GITHUB_REF?.match(/refs\/pull\/(\d+)\/merge/)?.[1];
+
   try {
-    if (context.payload.pull_request == null) {
+    if (!pullRequestNumber) {
       setFailed('No pull request found');
 
       return;
@@ -30,17 +43,14 @@ const run = async (): Promise<void> => {
 
     const commentIdentifier = getCommentIdentifier();
     const [owner, repo] = githubRepo.split('/');
-    const pullRequestNumber = context.payload.pull_request.number;
     const octokit = new Octokit();
     const comments = await octokit.issues.listComments({
       owner,
       repo,
-      issue_number: pullRequestNumber,
+      issue_number: Number.parseInt(pullRequestNumber, 10),
     });
-    const existingComment = comments.data.find((comment) =>
-      comment?.body?.includes(commentIdentifier)
-    );
-    const message = await getMessage(commentIdentifier, !!existingComment);
+    const existingComment = comments.data.find((comment) => comment?.body?.includes(commentIdentifier));
+    const message = await checkSchema(commentIdentifier, !!existingComment);
 
     if (message) {
       if (existingComment) {
@@ -52,13 +62,17 @@ const run = async (): Promise<void> => {
       } else {
         octokit.issues.createComment({
           ...context.repo,
-          issue_number: pullRequestNumber,
+          issue_number: Number.parseInt(pullRequestNumber),
           body: message,
         });
       }
     }
   } catch (error) {
-    setFailed(error.message);
+    if (error instanceof Error) {
+      setFailed(error.message);
+    } else {
+      setFailed(inspect(error));
+    }
   }
 };
 

@@ -1,51 +1,159 @@
+import { readFile } from 'fs/promises';
+import { parse, toSeconds } from 'iso8601-duration';
 import { getInput } from '@actions/core';
 
-import { debug } from './actions';
+import { debug } from './actions-helpers';
+import { getSchema } from './get-schema';
+import { getCommitDetails, CommitDetails } from './get-commit-details';
 
-const getArguments = (): string[] => {
+export interface ActionInputs {
+  config?: string;
+  graph?: string;
+  variant?: string;
+  endpoint?: string;
+  headers?: string;
+  apolloKey: string;
+  localSchemaFile?: string;
+  queryCountThreshold?: string;
+  queryCountThresholdPercentage?: string;
+  serviceName?: string;
+  validationPeriod: string;
+}
+
+export interface ApolloConfigFile {
+  graphId?: string;
+  variant?: string;
+  service?: {
+    name?: string;
+    endpoint?: {
+      url: string;
+      headers?: { [key: string]: string };
+      skipSSLValidation?: boolean;
+    };
+    localSchemaFile?: string | string[];
+  };
+}
+
+export interface MergedConfig {
+  graph?: string;
+  variant: string;
+  serviceName?: string;
+  proposedSchema: {
+    sdl: string;
+  };
+  queryParameters: {
+    from: number;
+    queryCountThreshold?: number;
+    queryCountThresholdPercentage?: number;
+  };
+}
+
+export interface QueryVariables {
+  graph: string;
+  variant: string;
+  queryCountThreshold?: number;
+  queryCountThresholdPercentage?: number;
+  serviceName?: string;
+  proposedSchema: {
+    sdl: string;
+  };
+  gitContext: CommitDetails;
+  queryParameters: {
+    from: number;
+  };
+}
+
+const getApolloConfigFile = async (file: string): Promise<ApolloConfigFile> => {
+  try {
+    const contents = JSON.parse(await readFile(file, 'utf8'));
+
+    return contents;
+  } catch {
+    throw new Error(`Could not parse Apollo config file: ${file}`);
+  }
+};
+
+const stringToNumber = (input?: string): number | undefined => {
+  if (input && input !== '') {
+    if (Number.isInteger(input)) {
+      return Number.parseInt(input, 10);
+    } else {
+      return Number.parseFloat(input);
+    }
+  }
+};
+
+const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): Promise<MergedConfig> => {
+  const mergedConfig = {
+    ...inputs,
+    graph: config.graphId ?? inputs.graph,
+    variant: config.variant ?? inputs.variant ?? 'current',
+    serviceName: config.service?.name ?? inputs.serviceName,
+    queryParameters: {
+      from: Number.isInteger(inputs.validationPeriod)
+        ? 0 - Number.parseInt(inputs.validationPeriod, 10)
+        : 0 - toSeconds(parse(inputs.validationPeriod)),
+      queryCountThreshold: stringToNumber(inputs.queryCountThreshold),
+      queryCountThresholdPercentage: stringToNumber(inputs.queryCountThresholdPercentage),
+    },
+  };
+
+  const schema = await getSchema({
+    localSchemaFiles: config.service?.localSchemaFile ?? inputs.localSchemaFile,
+    endpoint: config.service?.endpoint?.url ?? inputs.endpoint,
+    headers: config.service?.endpoint?.headers ?? inputs.headers,
+  });
+
+  return { ...mergedConfig, proposedSchema: { sdl: schema } };
+};
+
+const getQueryVariables = async (): Promise<QueryVariables> => {
   const inputs = {
     config: getInput('config'),
     graph: getInput('graph'),
     variant: getInput('variant'),
     endpoint: getInput('endpoint'),
-    header: getInput('header'),
-    key: getInput('key'),
+    headers: getInput('headers'),
+    apolloKey: getInput('key'),
     localSchemaFile: getInput('localSchemaFile'),
     queryCountThreshold: getInput('queryCountThreshold'),
     queryCountThresholdPercentage: getInput('queryCountThresholdPercentage'),
     serviceName: getInput('serviceName'),
-    validationPeriod: getInput('validationPeriod')
+    validationPeriod: getInput('validationPeriod'),
   };
-  // see https://www.apollographql.com/docs/studio/github-integration/#github-actions
-  const branch = `--branch=${process.env.GITHUB_REF}#refs/heads/`;
-  const author = `--author=${process.env.GITHUB_ACTOR}`;
-  const args = [branch, author];
 
-  debug('token', !!process.env.GITHUB_TOKEN);
+  debug(
+    'arguments',
+    Object.entries(inputs).filter(([key]) => key !== 'apolloApiKey')
+  );
 
-  if (inputs.graph && !inputs.key) {
-    throw new Error('You must provide an Apollo key');
+  if (!inputs.apolloKey) {
+    throw new Error('You must provide an Apollo Studio API key');
   }
 
-  if (!inputs.config && !inputs.graph) {
-    throw new Error('You must provide either a config file or a graph name');
+  if (!inputs.validationPeriod) {
+    throw new Error('You must provide a validation period');
   }
 
-  for (const [key, value] of Object.entries(inputs)) {
-    if (key === 'header' && value) {
-      const headers = value.split(',');
+  const apolloConfig = inputs.config ? await getApolloConfigFile(inputs.config) : {};
+  const mergedConfig = await getMergedConfig(apolloConfig, inputs);
+  const commitDetails = await getCommitDetails();
 
-      for (const header of headers) {
-        args.push(`--header='${header.trim()}'`);
-      }
-    } else if (value) {
-      args.push(`--${key}=${value}`);
-    }
+  if (!mergedConfig.graph) {
+    throw new Error('You must provide a graph name');
   }
 
-  args.push('--markdown');
+  if (!mergedConfig.proposedSchema.sdl) {
+    throw new Error('You must provide a schema');
+  }
 
-  return args;
+  const variables: QueryVariables = {
+    ...mergedConfig,
+    graph: mergedConfig.graph,
+    gitContext: commitDetails,
+  };
+
+  return variables;
 };
 
-export { getArguments };
+export { getQueryVariables };

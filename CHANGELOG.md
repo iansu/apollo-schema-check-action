@@ -1,5 +1,9 @@
 # Apollo Schema Check Action Changelog
 
+## 2.0.0 (December 20, 2021)
+
+- Rewrite to not use the Apollo CLI
+
 ## 1.2.2 (December 2, 2021)
 
 - Add additional debug logging
