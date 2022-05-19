@@ -1,9 +1,24 @@
 import { getInput, setFailed } from '@actions/core';
+import { parse, toSeconds } from 'iso8601-duration';
 import prettyMs from 'pretty-ms';
 
 import { info, debug } from './actions-helpers';
 import { ApolloStudioResponse, CheckSchemaResult, CompositionValidationResult } from './check-schema';
 import { QueryVariables } from './get-arguments';
+
+const getValidationPeriod = (validationPeriod: string): string => {
+  if (validationPeriod.startsWith('-')) {
+    return prettyMs(Math.abs(Number.parseInt(validationPeriod) * 1_000), {
+      compact: true,
+    });
+  } else if (validationPeriod.startsWith('P')) {
+    return prettyMs(toSeconds(parse(validationPeriod)) * 1_000, {
+      compact: true,
+    });
+  } else {
+    return validationPeriod;
+  }
+};
 
 const getSummary = (
   checkSchemaResult: CheckSchemaResult | null,
@@ -23,11 +38,8 @@ const getSummary = (
 
     summary += `🔢 Compared **${
       checkSchemaResult?.diffToPrevious.changes.length
-    } schema changes** against **${numberOfCheckedOperations} operations** seen over the **last ${prettyMs(
-      Math.abs(variables.queryParameters.from * 1_000),
-      {
-        compact: true,
-      }
+    } schema changes** against **${numberOfCheckedOperations} operations** seen over the **last ${getValidationPeriod(
+      variables.queryParameters.from
     )}**\n`;
 
     if (
@@ -126,4 +138,4 @@ const formatMessage = (
   return message;
 };
 
-export { formatMessage };
+export { formatMessage, getValidationPeriod };
