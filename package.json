@@ -21,6 +21,7 @@
     "test": "jest",
     "clean": "rimraf build",
     "clean:modules": "rimraf node_modules",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{ts,js}\"",
     "format": "prettier --write **/*.ts",
     "format:check": "prettier --check **/*.ts",
