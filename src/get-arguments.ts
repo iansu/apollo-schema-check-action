@@ -1,5 +1,4 @@
 import { readFile } from 'fs/promises';
-import { parse, toSeconds } from 'iso8601-duration';
 import { getInput } from '@actions/core';
 
 import { debug } from './actions-helpers';
@@ -42,7 +41,7 @@ export interface MergedConfig {
     sdl: string;
   };
   queryParameters: {
-    from: number;
+    from: string;
     queryCountThreshold?: number;
     queryCountThresholdPercentage?: number;
   };
@@ -59,7 +58,7 @@ export interface QueryVariables {
   };
   gitContext: CommitDetails;
   queryParameters: {
-    from: number;
+    from: string;
   };
 }
 
@@ -91,8 +90,8 @@ const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): 
     serviceName: config.service?.name ?? inputs.serviceName,
     queryParameters: {
       from: Number.isInteger(inputs.validationPeriod)
-        ? 0 - Number.parseInt(inputs.validationPeriod, 10)
-        : 0 - toSeconds(parse(inputs.validationPeriod)),
+        ? (0 - Number.parseInt(inputs.validationPeriod, 10)).toString()
+        : inputs.validationPeriod,
       queryCountThreshold: stringToNumber(inputs.queryCountThreshold),
       queryCountThresholdPercentage: stringToNumber(inputs.queryCountThresholdPercentage),
     },
