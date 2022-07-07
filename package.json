@@ -1,7 +1,7 @@
 {
   "name": "apollo-schema-check-action",
   "description": "A GitHub Action to run a schema check with Apollo Studio and post the results as a comment on a Pull Request",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {
@@ -21,6 +21,7 @@
     "test": "jest",
     "clean": "rimraf build",
     "clean:modules": "rimraf node_modules",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{ts,js}\"",
     "format": "prettier --write **/*.ts",
     "format:check": "prettier --check **/*.ts",

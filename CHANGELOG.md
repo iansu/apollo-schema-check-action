@@ -1,5 +1,9 @@
 # Apollo Schema Check Action Changelog
 
+## 2.0.1 (July 6, 2022)
+
+- Pass `from` parameter to Apollo Studio API as a string instead of a number (see: [https://status.apollographql.com/incidents/c5dvk0tbg5bv](https://status.apollographql.com/incidents/c5dvk0tbg5bv))
+
 ## 2.0.0 (December 20, 2021)
 
 - Rewrite to use a direct call to the Apollo Studio API instead of using the Apollo CLI

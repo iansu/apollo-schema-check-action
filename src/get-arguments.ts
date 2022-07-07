@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises';
-import { parse, toSeconds } from 'iso8601-duration';
 import { getInput } from '@actions/core';
+import { parse, toSeconds } from 'iso8601-duration';
 
 import { debug } from './actions-helpers';
 import { getSchema } from './get-schema';
@@ -42,7 +42,7 @@ export interface MergedConfig {
     sdl: string;
   };
   queryParameters: {
-    from: number;
+    from: string;
     queryCountThreshold?: number;
     queryCountThresholdPercentage?: number;
   };
@@ -59,19 +59,9 @@ export interface QueryVariables {
   };
   gitContext: CommitDetails;
   queryParameters: {
-    from: number;
+    from: string;
   };
 }
-
-const getApolloConfigFile = async (file: string): Promise<ApolloConfigFile> => {
-  try {
-    const contents = JSON.parse(await readFile(file, 'utf8'));
-
-    return contents;
-  } catch {
-    throw new Error(`Could not parse Apollo config file: ${file}`);
-  }
-};
 
 const stringToNumber = (input?: string): number | undefined => {
   if (input && input !== '') {
@@ -83,6 +73,26 @@ const stringToNumber = (input?: string): number | undefined => {
   }
 };
 
+const getApolloConfigFile = async (file: string): Promise<ApolloConfigFile> => {
+  try {
+    const contents = JSON.parse(await readFile(file, 'utf8'));
+
+    return contents;
+  } catch {
+    throw new Error(`Could not parse Apollo config file: ${file}`);
+  }
+};
+
+const getFromValue = (validationPeriod: string): string => {
+  if (validationPeriod.startsWith('P')) {
+    return `${toSeconds(parse(validationPeriod))} sec`;
+  } else if (validationPeriod.match(/^-?\d+$/)) {
+    return `${Math.abs(Number.parseInt(validationPeriod))} sec`;
+  } else {
+    return validationPeriod;
+  }
+};
+
 const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): Promise<MergedConfig> => {
   const mergedConfig = {
     ...inputs,
@@ -90,9 +100,7 @@ const getMergedConfig = async (config: ApolloConfigFile, inputs: ActionInputs): 
     variant: config.variant ?? inputs.variant ?? 'current',
     serviceName: config.service?.name ?? inputs.serviceName,
     queryParameters: {
-      from: Number.isInteger(inputs.validationPeriod)
-        ? 0 - Number.parseInt(inputs.validationPeriod, 10)
-        : 0 - toSeconds(parse(inputs.validationPeriod)),
+      from: getFromValue(inputs.validationPeriod),
       queryCountThreshold: stringToNumber(inputs.queryCountThreshold),
       queryCountThresholdPercentage: stringToNumber(inputs.queryCountThresholdPercentage),
     },
@@ -156,4 +164,4 @@ const getQueryVariables = async (): Promise<QueryVariables> => {
   return variables;
 };
 
-export { getQueryVariables };
+export { getQueryVariables, getFromValue };

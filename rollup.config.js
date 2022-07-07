@@ -18,7 +18,6 @@ export default {
     'graphql',
     'iso8601-duration',
     'path',
-    'pretty-ms',
     'util',
   ],
   plugins: [typescript(), json()],
