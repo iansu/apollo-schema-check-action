@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import { when } from 'jest-when';
 
-import { getQueryVariables } from '../src/get-arguments';
+import { getQueryVariables, getFromValue } from '../src/get-arguments';
 
 const mockGetInput = jest.spyOn(core, 'getInput');
 
@@ -87,5 +87,23 @@ describe.skip('getQueryVariables', () => {
     expect(args).toContain('--serviceName=my-service');
     expect(args).toContain('--validationPeriod=p2w');
     expect(args).toContain('--markdown');
+  });
+});
+
+describe('getFromValue', () => {
+  test('negative number of seconds', () => {
+    expect(getFromValue('-86400')).toBe('86400 sec');
+  });
+
+  test('positive number of seconds', () => {
+    expect(getFromValue('300')).toBe('300 sec');
+  });
+
+  test('ISO 8601 duration', () => {
+    expect(getFromValue('P2W')).toBe('1209600 sec');
+  });
+
+  test('Plain text duration', () => {
+    expect(getFromValue('2 weeks')).toBe('2 weeks');
   });
 });

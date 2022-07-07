@@ -1,5 +1,6 @@
 import { getInput, setFailed } from '@actions/core';
 import { parse, toSeconds } from 'iso8601-duration';
+import prettyMs from 'pretty-ms';
 
 import { info, debug } from './actions-helpers';
 import { ApolloStudioResponse, CheckSchemaResult, CompositionValidationResult } from './check-schema';
@@ -7,9 +8,9 @@ import { QueryVariables } from './get-arguments';
 
 const getValidationPeriod = (validationPeriod: string): string => {
   if (validationPeriod.startsWith('P')) {
-    return `${toSeconds(parse(validationPeriod))} sec`;
+    return prettyMs(toSeconds(parse(validationPeriod)) * 1_000, { verbose: true });
   } else if (validationPeriod.match(/^-?\d+$/)) {
-    return `${Math.abs(Number.parseInt(validationPeriod))} sec`;
+    return prettyMs(Math.abs(Number.parseInt(validationPeriod)) * 1_000, { verbose: true });
   } else {
     return validationPeriod;
   }
