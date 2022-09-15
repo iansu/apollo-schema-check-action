@@ -92,15 +92,15 @@ describe.skip('getQueryVariables', () => {
 
 describe('getFromValue', () => {
   test('negative number of seconds', () => {
-    expect(getFromValue('-86400')).toBe('86400 sec');
+    expect(getFromValue('-86400')).toBe('86400');
   });
 
   test('positive number of seconds', () => {
-    expect(getFromValue('300')).toBe('300 sec');
+    expect(getFromValue('300')).toBe('300');
   });
 
   test('ISO 8601 duration', () => {
-    expect(getFromValue('P2W')).toBe('1209600 sec');
+    expect(getFromValue('P2W')).toBe('1209600');
   });
 
   test('Plain text duration', () => {
