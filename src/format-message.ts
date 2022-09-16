@@ -49,7 +49,7 @@ const getSummary = (
       checkSchemaResult?.diffToPrevious.severity === 'WARNING' ||
       checkSchemaResult?.diffToPrevious.severity === 'FAILURE'
     ) {
-      const issueCount = checkSchemaResult?.diffToPrevious.changes.filter((c) => c.severity === 'FAILURE' || c.severity === 'WARNING').length;
+      const issueCount = checkSchemaResult?.diffToPrevious.changes.filter((change) => change.severity === 'FAILURE' || change.severity === 'WARNING').length;
       summary += `❌ Found **${issueCount} breaking changes**\n\n`;
 
       setFailed('Breaking changes found');
