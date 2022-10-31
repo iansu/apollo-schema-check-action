@@ -129,6 +129,18 @@ const formatMessage = (
 
     message += '```\n';
   }
+  
+  if (checkSchemaResult?.diffToPrevious.severity === 'FAILURE') {
+    message += '#### Schema Change Errors\n\n```\n';
+
+    for (const change of checkSchemaResult?.diffToPrevious.changes) {
+      if (change.severity === 'FAILURE') {
+        message += `${error.description}\n`;
+      }
+    }
+
+    message += '```\n';
+  }
 
   info('message', message);
 
