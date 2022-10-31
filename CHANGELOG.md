@@ -1,5 +1,10 @@
 # Apollo Schema Check Action Changelog
 
+## 2.1.0 (October 31, 2022)
+
+- Include a list of errors in the PR comment (@comp615)
+- Fix: only count errors and warnings in change summary (@comp615)
+
 ## 2.0.2 (September 15, 2022)
 
 - Update `from` parameter format. It seems Apollo no longer wants `sec` included with offsets.
