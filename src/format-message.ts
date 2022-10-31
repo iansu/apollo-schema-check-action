@@ -49,7 +49,10 @@ const getSummary = (
       checkSchemaResult?.diffToPrevious.severity === 'WARNING' ||
       checkSchemaResult?.diffToPrevious.severity === 'FAILURE'
     ) {
-      const issueCount = checkSchemaResult?.diffToPrevious.changes.filter((change) => change.severity === 'FAILURE' || change.severity === 'WARNING').length;
+      const issueCount = checkSchemaResult?.diffToPrevious.changes.filter(
+        (change) => change.severity === 'FAILURE' || change.severity === 'WARNING'
+      ).length;
+
       summary += `❌ Found **${issueCount} breaking changes**\n\n`;
 
       setFailed('Breaking changes found');
@@ -129,13 +132,13 @@ const formatMessage = (
 
     message += '```\n';
   }
-  
+
   if (checkSchemaResult?.diffToPrevious.severity === 'FAILURE') {
     message += '#### Schema Change Errors\n\n```\n';
 
     for (const change of checkSchemaResult?.diffToPrevious.changes) {
       if (change.severity === 'FAILURE') {
-        message += `${error.description}\n`;
+        message += `${change.description}\n`;
       }
     }
 
