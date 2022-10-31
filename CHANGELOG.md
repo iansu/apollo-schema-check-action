@@ -28,7 +28,7 @@
 
 ## 1.2.0 (August 18, 2021)
 
-- Add branch and author information when pushing to Apollo Studio
+- Add branch and author information when pushing to Apollo Studio (@AndresRodH)
 
 ## 1.1.0 (August 18, 2021)
 

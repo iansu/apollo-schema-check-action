@@ -74,6 +74,18 @@ This Action offers some features that the Apollo GitHub App doesn't. If you don'
 1. This Action posts a comment with the results directly on your PR
 1. This Action supports multiple graphs
 
+## Releasing
+
+### Publishing a release
+
+To publish a release use the [Release](https://github.com/iansu/apollo-schema-check-action/actions/workflows/release.yml) workflow. When you run the workflow it will ask you for a version tag like `v2.0.0`. This should be the full version number of the new release. It will also ask you for a major version number like `v2`. This allows you to reference the release as either `@v2` of `@v2.0.0`. You can also reference the hash of the release for additional security.
+
+After the workflow runs a draft release will be created on GitHub. Edit the release and copy the CHANGELOG entries into the description. Then publish the release, including publishing to the GitHub Marketplace.
+
+### Creating a preview Release
+
+To create a preview release use the [Release Next](https://github.com/iansu/apollo-schema-check-action/actions/workflows/release-next.yml) workflow. When you run the workflow it will ask you for the name of the branch to build. This should be the feature branch that you want to test. The release will be published to the `next` branch and you can use `iansu/apollo-schema-check-action@next` in your workflows to test the preview release.
+
 ## Credits
 
 Made with :tumbler_glass: by [Ian Sutherland](https://iansutherland.ca) ([@iansu](https://twitter.com/iansu)). This project is released under the [MIT](/LICENSE) license.
