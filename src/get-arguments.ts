@@ -85,9 +85,9 @@ const getApolloConfigFile = async (file: string): Promise<ApolloConfigFile> => {
 
 const getFromValue = (validationPeriod: string): string => {
   if (validationPeriod.startsWith('P')) {
-    return `${toSeconds(parse(validationPeriod))}`;
+    return `-${toSeconds(parse(validationPeriod))}`;
   } else if (validationPeriod.match(/^-?\d+$/)) {
-    return `${Math.abs(Number.parseInt(validationPeriod))}`;
+    return `-${Math.abs(Number.parseInt(validationPeriod))}`;
   } else {
     return validationPeriod;
   }

@@ -104,6 +104,7 @@ const checkSchema = async (commentIdentifier: string, existingComment: boolean):
 
   try {
     const variables = await getQueryVariables();
+    debug('Apollo Studio request variables', JSON.stringify(variables, null, 2));
     const data = await graphQLClient.request<ApolloStudioResponse, QueryVariables>(mutation, variables);
 
     return formatMessage(data, variables, commentIdentifier, existingComment);
