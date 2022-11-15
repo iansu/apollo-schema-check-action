@@ -1,5 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request';
 import { getInput } from '@actions/core';
+import { debug } from './actions-helpers';
 
 import { getQueryVariables, QueryVariables } from './get-arguments';
 import { formatMessage } from './format-message';
