@@ -1,5 +1,9 @@
 # Apollo Schema Check Action Changelog
 
+## 2.1.1 (November 15, 2022)
+
+- Fix: Use negative from parameter when sending to Apollo backend (@comp615)
+
 ## 2.1.0 (October 31, 2022)
 
 - Include a list of errors in the PR comment (@comp615)
