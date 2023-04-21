@@ -1,5 +1,9 @@
 # Apollo Schema Check Action Changelog
 
+## Unreleased
+
+- Fix: action now properly fails when schema build fails (@comp615)
+
 ## 2.1.0 (October 31, 2022)
 
 - Include a list of errors in the PR comment (@comp615)

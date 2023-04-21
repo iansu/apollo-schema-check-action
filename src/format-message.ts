@@ -85,8 +85,8 @@ const formatMessage = (
   const checkSchemaResult = output.service.checkPartialSchema.checkSchemaResult;
   const compositionValidationResult = output.service.checkPartialSchema.compositionValidationResult;
 
-  if (alwaysComment !== 'true' && checkSchemaResult === null) {
-    debug('alwaysComment is false and number of operations is null');
+  if (alwaysComment !== 'true' && checkSchemaResult === null && compositionValidationResult.compositionSuccess) {
+    debug('alwaysComment is false, number of operations is null and schema build was successful');
     debug('output', output);
 
     return;
